@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_Solution_Items", "0_Solut
 		README.md = README.md
 		Directory.Build.props = Directory.Build.props
 		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_App", "1_App", "{77BFDFFC-FECE-4B4C-827B-4475D539554B}"
@@ -18,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base.Contracts.Domain", "Base.Contracts.Domain\Base.Contracts.Domain.csproj", "{DA9A8A61-FFAD-484A-976A-315B4E198C86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base.Domain", "Base.Domain\Base.Domain.csproj", "{9F0AC03B-DCCB-4285-9B46-D4237EDBAB0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.DAL.EF", "App.DAL.EF\App.DAL.EF.csproj", "{79444356-2026-4031-ABE5-F9E154735C06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,11 +44,16 @@ Global
 		{9F0AC03B-DCCB-4285-9B46-D4237EDBAB0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F0AC03B-DCCB-4285-9B46-D4237EDBAB0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F0AC03B-DCCB-4285-9B46-D4237EDBAB0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79444356-2026-4031-ABE5-F9E154735C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79444356-2026-4031-ABE5-F9E154735C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79444356-2026-4031-ABE5-F9E154735C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79444356-2026-4031-ABE5-F9E154735C06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B} = {77BFDFFC-FECE-4B4C-827B-4475D539554B}
 		{46FDAD2A-C32D-4670-8276-9BC866DE6960} = {77BFDFFC-FECE-4B4C-827B-4475D539554B}
 		{DA9A8A61-FFAD-484A-976A-315B4E198C86} = {6E4DCCF8-5AA3-4D61-ACAE-CDEB03E635B2}
 		{9F0AC03B-DCCB-4285-9B46-D4237EDBAB0C} = {6E4DCCF8-5AA3-4D61-ACAE-CDEB03E635B2}
+		{79444356-2026-4031-ABE5-F9E154735C06} = {77BFDFFC-FECE-4B4C-827B-4475D539554B}
 	EndGlobalSection
 EndGlobal
