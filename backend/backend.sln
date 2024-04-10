@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_Solution_Items", "0_Solution_Items", "{A6940FCD-3D6D-44F1-8961-02E775E0D35F}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		Directory.Build.props = Directory.Build.props
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_App", "1_App", "{77BFDFFC-FECE-4B4C-827B-4475D539554B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2_Base", "2_Base", "{6E4DCCF8-5AA3-4D61-ACAE-CDEB03E635B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D9D3F21-515E-4A6E-8EE0-B2B3E2B1F32B} = {77BFDFFC-FECE-4B4C-827B-4475D539554B}
+	EndGlobalSection
+EndGlobal
