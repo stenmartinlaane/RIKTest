@@ -3,6 +3,12 @@
 
 ## EF Core migrations
 
+Install tooling
+
+~~~bash
+dotnet tool update -g dotnet-ef
+~~~
+
 Run from solution folder
 
 ~~~bash
