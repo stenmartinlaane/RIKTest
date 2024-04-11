@@ -23,8 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/Firm
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Exercises.Include(f => f.PaymentMethod);
-            return View(await appDbContext.ToListAsync());
+            return View(await _context.Exercises.ToListAsync());
         }
 
         // GET: Admin/Firm/Details/5
@@ -36,7 +35,6 @@ namespace WebApp.Areas.Admin.Controllers
             }
 
             var firm = await _context.Exercises
-                .Include(f => f.PaymentMethod)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (firm == null)
             {
@@ -49,7 +47,6 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/Firm/Create
         public IActionResult Create()
         {
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy");
             return View();
         }
 
@@ -58,7 +55,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,RegistryCode,ParticipantCount,AdditionalNotes,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] Firm firm)
+        public async Task<IActionResult> Create([Bind("Name,RegistryCode,ParticipantCount,AdditionalNotes,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] Firm firm)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +64,6 @@ namespace WebApp.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", firm.PaymentMethodId);
             return View(firm);
         }
 
@@ -84,7 +80,6 @@ namespace WebApp.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", firm.PaymentMethodId);
             return View(firm);
         }
 
@@ -93,7 +88,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Name,RegistryCode,ParticipantCount,AdditionalNotes,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] Firm firm)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Name,RegistryCode,ParticipantCount,AdditionalNotes,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] Firm firm)
         {
             if (id != firm.Id)
             {
@@ -120,7 +115,6 @@ namespace WebApp.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", firm.PaymentMethodId);
             return View(firm);
         }
 
@@ -133,7 +127,6 @@ namespace WebApp.Areas.Admin.Controllers
             }
 
             var firm = await _context.Exercises
-                .Include(f => f.PaymentMethod)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (firm == null)
             {

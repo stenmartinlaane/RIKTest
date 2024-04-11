@@ -9,8 +9,7 @@ public class Firm : BaseEntityIdMetadata
     public int ParticipantCount { get; set; }
     public string AdditionalNotes { get; set; } = default!;
     
-    public Guid? PaymentMethodId { get; set; }
-    public PaymentMethod? PaymentMethod { get; set; } = default!;
+
     
     public List<ParticipantEvent>? ParticipantEvents { get; set; }
 }

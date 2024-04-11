@@ -57,7 +57,6 @@ namespace App.DAL.EF.Migrations
                     RegistryCode = table.Column<string>(type: "text", nullable: false),
                     ParticipantCount = table.Column<int>(type: "integer", nullable: false),
                     AdditionalNotes = table.Column<string>(type: "text", nullable: false),
-                    PaymentMethodId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
@@ -66,11 +65,6 @@ namespace App.DAL.EF.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Exercises", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Exercises_ExerciseResults_PaymentMethodId",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "ExerciseResults",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -82,7 +76,6 @@ namespace App.DAL.EF.Migrations
                     LastName = table.Column<string>(type: "text", nullable: false),
                     PersonalIdentificationNumber = table.Column<int>(type: "integer", nullable: false),
                     AdditionalNotes = table.Column<string>(type: "text", nullable: false),
-                    PaymentMethodId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
@@ -91,11 +84,6 @@ namespace App.DAL.EF.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Games", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Games_ExerciseResults_PaymentMethodId",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "ExerciseResults",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -106,6 +94,7 @@ namespace App.DAL.EF.Migrations
                     RegisterDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     PersonId = table.Column<Guid>(type: "uuid", nullable: true),
                     FirmId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PaymentMethodId = table.Column<Guid>(type: "uuid", nullable: true),
                     EventId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -119,6 +108,11 @@ namespace App.DAL.EF.Migrations
                         name: "FK_ExerciseMadeFors_Accounts_EventId",
                         column: x => x.EventId,
                         principalTable: "Accounts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ExerciseMadeFors_ExerciseResults_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "ExerciseResults",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ExerciseMadeFors_Exercises_FirmId",
@@ -143,19 +137,14 @@ namespace App.DAL.EF.Migrations
                 column: "FirmId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ExerciseMadeFors_PaymentMethodId",
+                table: "ExerciseMadeFors",
+                column: "PaymentMethodId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExerciseMadeFors_PersonId",
                 table: "ExerciseMadeFors",
                 column: "PersonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Exercises_PaymentMethodId",
-                table: "Exercises",
-                column: "PaymentMethodId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Games_PaymentMethodId",
-                table: "Games",
-                column: "PaymentMethodId");
         }
 
         /// <inheritdoc />
@@ -168,13 +157,13 @@ namespace App.DAL.EF.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
+                name: "ExerciseResults");
+
+            migrationBuilder.DropTable(
                 name: "Exercises");
 
             migrationBuilder.DropTable(
                 name: "Games");
-
-            migrationBuilder.DropTable(
-                name: "ExerciseResults");
         }
     }
 }

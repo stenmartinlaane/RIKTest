@@ -20,13 +20,19 @@
             @Html.DisplayNameFor(model => model.Person)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Person.AdditionalNotes)
+            @Html.DisplayFor(model => model.Person!.AdditionalNotes)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Firm)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Firm.AdditionalNotes)
+            @Html.DisplayFor(model => model.Firm!.AdditionalNotes)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PaymentMethod)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PaymentMethod!.CreatedBy)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedBy)

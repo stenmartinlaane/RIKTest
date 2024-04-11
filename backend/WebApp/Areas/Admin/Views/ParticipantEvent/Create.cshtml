@@ -19,11 +19,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="PersonId" class="control-label"></label>
-                <select asp-for="PersonId" class ="form-control" asp-items="ViewBag.PersonId"></select>
+                <select asp-for="PersonId" class="form-control" asp-items="ViewBag.PersonId">
+                    <option value=""></option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="FirmId" class="control-label"></label>
-                <select asp-for="FirmId" class ="form-control" asp-items="ViewBag.FirmId"></select>
+                <select asp-for="FirmId" class="form-control" asp-items="ViewBag.FirmId">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentMethodId" class="control-label"></label>
+                <select asp-for="PaymentMethodId" class ="form-control" asp-items="ViewBag.PaymentMethodId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="CreatedBy" class="control-label"></label>

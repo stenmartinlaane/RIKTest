@@ -9,8 +9,5 @@ public class Person : BaseEntityIdMetadata
     public int PersonalIdentificationNumber { get; set; }
     public string AdditionalNotes { get; set; } = default!;
     
-    public Guid? PaymentMethodId { get; set; }
-    public PaymentMethod? PaymentMethod { get; set; } = default!;
-    
     public List<ParticipantEvent>? ParticipantEvents { get; set; }
 }

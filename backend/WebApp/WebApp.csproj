@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,6 +23,38 @@
 
     <ItemGroup>
       <ProjectReference Include="..\App.DAL.EF\App.DAL.EF.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Event\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Event\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Event\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Event\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Event\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Firm\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Firm\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Firm\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Firm\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Firm\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ParticipantEvent\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ParticipantEvent\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ParticipantEvent\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ParticipantEvent\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\ParticipantEvent\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PaymentMethod\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PaymentMethod\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PaymentMethod\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PaymentMethod\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\PaymentMethod\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Person\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Person\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Person\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Person\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Person\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Areas\Admin\Controllers\" />
     </ItemGroup>
 
 </Project>

@@ -89,9 +89,6 @@ namespace App.DAL.EF.Migrations
                     b.Property<int>("ParticipantCount")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("PaymentMethodId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("RegistryCode")
                         .IsRequired()
                         .HasColumnType("text");
@@ -105,8 +102,6 @@ namespace App.DAL.EF.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PaymentMethodId");
 
                     b.ToTable("Exercises");
                 });
@@ -131,6 +126,9 @@ namespace App.DAL.EF.Migrations
                     b.Property<Guid?>("FirmId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("PaymentMethodId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("PersonId")
                         .HasColumnType("uuid");
 
@@ -150,6 +148,8 @@ namespace App.DAL.EF.Migrations
                     b.HasIndex("EventId");
 
                     b.HasIndex("FirmId");
+
+                    b.HasIndex("PaymentMethodId");
 
                     b.HasIndex("PersonId");
 
@@ -220,9 +220,6 @@ namespace App.DAL.EF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PaymentMethodId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("PersonalIdentificationNumber")
                         .HasColumnType("integer");
 
@@ -236,18 +233,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentMethodId");
-
                     b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("App.Domain.Firm", b =>
-                {
-                    b.HasOne("App.Domain.PaymentMethod", "PaymentMethod")
-                        .WithMany("Firms")
-                        .HasForeignKey("PaymentMethodId");
-
-                    b.Navigation("PaymentMethod");
                 });
 
             modelBuilder.Entity("App.Domain.ParticipantEvent", b =>
@@ -260,22 +246,19 @@ namespace App.DAL.EF.Migrations
                         .WithMany("ParticipantEvents")
                         .HasForeignKey("FirmId");
 
+                    b.HasOne("App.Domain.PaymentMethod", "PaymentMethod")
+                        .WithMany("Firms")
+                        .HasForeignKey("PaymentMethodId");
+
                     b.HasOne("App.Domain.Person", "Person")
                         .WithMany("ParticipantEvents")
                         .HasForeignKey("PersonId");
 
                     b.Navigation("Firm");
 
-                    b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("App.Domain.Person", b =>
-                {
-                    b.HasOne("App.Domain.PaymentMethod", "PaymentMethod")
-                        .WithMany("Persons")
-                        .HasForeignKey("PaymentMethodId");
-
                     b.Navigation("PaymentMethod");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("App.Domain.Event", b =>
@@ -291,8 +274,6 @@ namespace App.DAL.EF.Migrations
             modelBuilder.Entity("App.Domain.PaymentMethod", b =>
                 {
                     b.Navigation("Firms");
-
-                    b.Navigation("Persons");
                 });
 
             modelBuilder.Entity("App.Domain.Person", b =>

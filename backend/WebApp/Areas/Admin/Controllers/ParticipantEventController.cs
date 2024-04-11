@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/ParticipantEvent
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.ExerciseMadeFors.Include(p => p.Firm).Include(p => p.Person);
+            var appDbContext = _context.ExerciseMadeFors.Include(p => p.Firm).Include(p => p.PaymentMethod).Include(p => p.Person);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -37,6 +37,7 @@ namespace WebApp.Areas.Admin.Controllers
 
             var participantEvent = await _context.ExerciseMadeFors
                 .Include(p => p.Firm)
+                .Include(p => p.PaymentMethod)
                 .Include(p => p.Person)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (participantEvent == null)
@@ -51,6 +52,7 @@ namespace WebApp.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes");
+            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy");
             ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes");
             return View();
         }
@@ -60,7 +62,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RegisterDateTime,PersonId,FirmId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
+        public async Task<IActionResult> Create([Bind("RegisterDateTime,PersonId,FirmId,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
         {
             if (ModelState.IsValid)
             {
@@ -70,6 +72,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", participantEvent.PaymentMethodId);
             ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes", participantEvent.PersonId);
             return View(participantEvent);
         }
@@ -88,6 +91,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", participantEvent.PaymentMethodId);
             ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes", participantEvent.PersonId);
             return View(participantEvent);
         }
@@ -97,7 +101,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("RegisterDateTime,PersonId,FirmId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
+        public async Task<IActionResult> Edit(Guid id, [Bind("RegisterDateTime,PersonId,FirmId,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
         {
             if (id != participantEvent.Id)
             {
@@ -125,6 +129,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", participantEvent.PaymentMethodId);
             ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes", participantEvent.PersonId);
             return View(participantEvent);
         }
@@ -139,6 +144,7 @@ namespace WebApp.Areas.Admin.Controllers
 
             var participantEvent = await _context.ExerciseMadeFors
                 .Include(p => p.Firm)
+                .Include(p => p.PaymentMethod)
                 .Include(p => p.Person)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (participantEvent == null)
