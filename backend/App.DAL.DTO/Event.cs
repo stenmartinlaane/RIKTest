@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using Base.Domain;
 
-namespace App.Domain;
+namespace App.DAL.DTO;
 
-public class Event : BaseEntityIdMetadata
+public class Event : BaseEntityId
 {
     public DateTime StartTime { get; set; }
     public string Location { get; set; } = default!;

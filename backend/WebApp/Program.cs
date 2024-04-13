@@ -1,3 +1,4 @@
+using App.Contracts.DAL;
 using App.DAL.EF;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IAppUnitOfWork, AppUOW>();
+
+builder.Services.AddAutoMapper(
+    typeof(App.DAL.EF.AutoMapperProfile)
+);
 
 var app = builder.Build();
 
