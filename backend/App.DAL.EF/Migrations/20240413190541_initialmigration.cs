@@ -12,7 +12,7 @@ namespace App.DAL.EF.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Accounts",
+                name: "Events",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -27,29 +27,11 @@ namespace App.DAL.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.PrimaryKey("PK_Events", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExerciseResults",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MethodName = table.Column<string>(type: "text", nullable: false),
-                    MethodDescription = table.Column<string>(type: "text", nullable: false),
-                    Active = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExerciseResults", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Exercises",
+                name: "Firms",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -64,11 +46,29 @@ namespace App.DAL.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exercises", x => x.Id);
+                    table.PrimaryKey("PK_Firms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "PaymentMethods",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MethodName = table.Column<string>(type: "text", nullable: false),
+                    MethodDescription = table.Column<string>(type: "text", nullable: false),
+                    Active = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentMethods", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Persons",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -83,11 +83,11 @@ namespace App.DAL.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.PrimaryKey("PK_Persons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExerciseMadeFors",
+                name: "ParticipantEvents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -103,47 +103,47 @@ namespace App.DAL.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseMadeFors", x => x.Id);
+                    table.PrimaryKey("PK_ParticipantEvents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExerciseMadeFors_Accounts_EventId",
+                        name: "FK_ParticipantEvents_Events_EventId",
                         column: x => x.EventId,
-                        principalTable: "Accounts",
+                        principalTable: "Events",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ExerciseMadeFors_ExerciseResults_PaymentMethodId",
-                        column: x => x.PaymentMethodId,
-                        principalTable: "ExerciseResults",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ExerciseMadeFors_Exercises_FirmId",
+                        name: "FK_ParticipantEvents_Firms_FirmId",
                         column: x => x.FirmId,
-                        principalTable: "Exercises",
+                        principalTable: "Firms",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ExerciseMadeFors_Games_PersonId",
+                        name: "FK_ParticipantEvents_PaymentMethods_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "PaymentMethods",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ParticipantEvents_Persons_PersonId",
                         column: x => x.PersonId,
-                        principalTable: "Games",
+                        principalTable: "Persons",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseMadeFors_EventId",
-                table: "ExerciseMadeFors",
+                name: "IX_ParticipantEvents_EventId",
+                table: "ParticipantEvents",
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseMadeFors_FirmId",
-                table: "ExerciseMadeFors",
+                name: "IX_ParticipantEvents_FirmId",
+                table: "ParticipantEvents",
                 column: "FirmId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseMadeFors_PaymentMethodId",
-                table: "ExerciseMadeFors",
+                name: "IX_ParticipantEvents_PaymentMethodId",
+                table: "ParticipantEvents",
                 column: "PaymentMethodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExerciseMadeFors_PersonId",
-                table: "ExerciseMadeFors",
+                name: "IX_ParticipantEvents_PersonId",
+                table: "ParticipantEvents",
                 column: "PersonId");
         }
 
@@ -151,19 +151,19 @@ namespace App.DAL.EF.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ExerciseMadeFors");
+                name: "ParticipantEvents");
 
             migrationBuilder.DropTable(
-                name: "Accounts");
+                name: "Events");
 
             migrationBuilder.DropTable(
-                name: "ExerciseResults");
+                name: "Firms");
 
             migrationBuilder.DropTable(
-                name: "Exercises");
+                name: "PaymentMethods");
 
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "Persons");
         }
     }
 }

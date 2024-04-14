@@ -61,7 +61,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("App.Domain.Firm", b =>
@@ -103,7 +103,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Firms");
                 });
 
             modelBuilder.Entity("App.Domain.ParticipantEvent", b =>
@@ -153,7 +153,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("ExerciseMadeFors");
+                    b.ToTable("ParticipantEvents");
                 });
 
             modelBuilder.Entity("App.Domain.PaymentMethod", b =>
@@ -191,7 +191,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExerciseResults");
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("App.Domain.Person", b =>
@@ -233,7 +233,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("App.Domain.ParticipantEvent", b =>

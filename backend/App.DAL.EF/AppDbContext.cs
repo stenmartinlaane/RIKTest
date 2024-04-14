@@ -6,11 +6,11 @@ namespace App.DAL.EF;
 public class AppDbContext : DbContext
 
 {
-    public DbSet<Event> Accounts { get; set; } = default!;
-    public DbSet<Firm> Exercises { get; set; } = default!;
-    public DbSet<ParticipantEvent> ExerciseMadeFors { get; set; } = default!;
-    public DbSet<PaymentMethod> ExerciseResults { get; set; } = default!;
-    public DbSet<Person> Games { get; set; } = default!;
+    public DbSet<Event> Events { get; set; } = default!;
+    public DbSet<Firm> Firms { get; set; } = default!;
+    public DbSet<ParticipantEvent> ParticipantEvents { get; set; } = default!;
+    public DbSet<PaymentMethod> PaymentMethods { get; set; } = default!;
+    public DbSet<Person> Persons { get; set; } = default!;
 
     public AppDbContext(DbContextOptions options) : base(options)
     {

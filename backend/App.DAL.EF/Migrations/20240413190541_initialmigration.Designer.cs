@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace App.DAL.EF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240411083254_initialmigration")]
+    [Migration("20240413190541_initialmigration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -64,7 +64,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("App.Domain.Firm", b =>
@@ -106,7 +106,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Firms");
                 });
 
             modelBuilder.Entity("App.Domain.ParticipantEvent", b =>
@@ -156,7 +156,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("ExerciseMadeFors");
+                    b.ToTable("ParticipantEvents");
                 });
 
             modelBuilder.Entity("App.Domain.PaymentMethod", b =>
@@ -194,7 +194,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExerciseResults");
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("App.Domain.Person", b =>
@@ -236,7 +236,7 @@ namespace App.DAL.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("App.Domain.ParticipantEvent", b =>

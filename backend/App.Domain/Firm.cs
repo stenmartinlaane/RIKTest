@@ -11,5 +11,5 @@ public class Firm : BaseEntityIdMetadata
     
 
     
-    public List<ParticipantEvent>? ParticipantEvents { get; set; }
+    public ICollection<ParticipantEvent>? ParticipantEvents { get; set; }
 }

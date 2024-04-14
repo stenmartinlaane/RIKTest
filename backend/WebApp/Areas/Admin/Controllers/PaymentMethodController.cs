@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/PaymentMethod
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ExerciseResults.ToListAsync());
+            return View(await _context.PaymentMethods.ToListAsync());
         }
 
         // GET: Admin/PaymentMethod/Details/5
@@ -34,7 +34,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var paymentMethod = await _context.ExerciseResults
+            var paymentMethod = await _context.PaymentMethods
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (paymentMethod == null)
             {
@@ -75,7 +75,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var paymentMethod = await _context.ExerciseResults.FindAsync(id);
+            var paymentMethod = await _context.PaymentMethods.FindAsync(id);
             if (paymentMethod == null)
             {
                 return NotFound();
@@ -126,7 +126,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var paymentMethod = await _context.ExerciseResults
+            var paymentMethod = await _context.PaymentMethods
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (paymentMethod == null)
             {
@@ -141,10 +141,10 @@ namespace WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var paymentMethod = await _context.ExerciseResults.FindAsync(id);
+            var paymentMethod = await _context.PaymentMethods.FindAsync(id);
             if (paymentMethod != null)
             {
-                _context.ExerciseResults.Remove(paymentMethod);
+                _context.PaymentMethods.Remove(paymentMethod);
             }
 
             await _context.SaveChangesAsync();
@@ -153,7 +153,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         private bool PaymentMethodExists(Guid id)
         {
-            return _context.ExerciseResults.Any(e => e.Id == id);
+            return _context.PaymentMethods.Any(e => e.Id == id);
         }
     }
 }

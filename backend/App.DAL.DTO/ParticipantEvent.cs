@@ -13,5 +13,5 @@ public class ParticipantEvent : BaseEntityId
     public Firm? Firm { get; set; }
     
     public Guid? PaymentMethodId { get; set; }
-    public PaymentMethod? PaymentMethod { get; set; } = default!;
+    public PaymentMethod? PaymentMethod { get; set; }
 }

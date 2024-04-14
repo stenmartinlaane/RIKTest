@@ -20,6 +20,7 @@ dotnet ef database   --project App.DAL.EF --startup-project WebApp update --cont
 dotnet ef database   --project App.DAL.EF --startup-project WebApp drop --context AppDbContext
 ~~~
 
+## Generate admin controllers
 ~~~bash
 cd WebApp
 
@@ -28,6 +29,19 @@ dotnet aspnet-codegenerator controller -name FirmController -actions -m App.Doma
 dotnet aspnet-codegenerator controller -name ParticipantEventController -actions -m App.Domain.ParticipantEvent -dc AppDbContext -outDir Areas/Admin/Controllers --useDefaultLayout --useAsyncActions --referenceScriptLibraries -f
 dotnet aspnet-codegenerator controller -name PaymentMethodController -actions -m App.Domain.PaymentMethod -dc AppDbContext -outDir Areas/Admin/Controllers --useDefaultLayout --useAsyncActions --referenceScriptLibraries -f
 dotnet aspnet-codegenerator controller -name PersonController -actions -m App.Domain.Person -dc AppDbContext -outDir Areas/Admin/Controllers --useDefaultLayout --useAsyncActions --referenceScriptLibraries -f
+
+cd ..
+~~~
+
+## Generate api controllers
+ ~~~bash
+cd WebApp
+
+dotnet aspnet-codegenerator controller -name EventController -async -api -m App.Domain.Event -dc AppDbContext --relativeFolderPath Controllers
+dotnet aspnet-codegenerator controller -name FirmController -async -api -m App.Domain.Firm -dc AppDbContext --relativeFolderPath Controllers
+dotnet aspnet-codegenerator controller -name ParticipantEventController -async -api -m App.Domain.ParticipantEvent -dc AppDbContext --relativeFolderPath Controllers
+dotnet aspnet-codegenerator controller -name PaymentMethodController -async -api -m App.Domain.PaymentMethod -dc AppDbContext --relativeFolderPath Controllers
+dotnet aspnet-codegenerator controller -name PersonController -async -api -m App.Domain.Person -dc AppDbContext --relativeFolderPath Controllers
 
 cd ..
 ~~~

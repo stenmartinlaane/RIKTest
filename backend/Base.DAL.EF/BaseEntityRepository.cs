@@ -8,7 +8,7 @@ namespace Base.DAL.EF;
 
 public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext> :
     BaseEntityRepository<Guid, TDomainEntity, TDalEntity, TDbContext>, IEntityRepository<TDalEntity>
-    where TDomainEntity : class, IDomainEntityId
+    where TDomainEntity : BaseEntityIdMetadata
     where TDalEntity : BaseEntityId
     where TDbContext : DbContext
 {
@@ -22,7 +22,7 @@ public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext> :
 
 public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
     where TKey : IEquatable<TKey>
-    where TDomainEntity : class, IDomainEntityId
+    where TDomainEntity : BaseEntityIdMetadata
     where TDalEntity : class, IDomainEntityId
     where TDbContext : DbContext
 
@@ -50,12 +50,21 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
 
     public virtual TDalEntity Add(TDalEntity entity)
     {
-        return Mapper.Map(RepoDbSet.Add(Mapper.Map(entity)).Entity)!;
+        TDomainEntity domainEntity = Mapper.Map(entity)!;
+            DateTime creationTime = DateTime.Now.ToUniversalTime();
+            domainEntity.CreatedAt = creationTime;
+            domainEntity.CreatedBy = "api";
+            domainEntity.UpdatedAt = creationTime;
+            domainEntity.UpdatedBy = "api";
+        return Mapper.Map(RepoDbSet.Add(domainEntity).Entity)!;
     }
 
     public virtual TDalEntity Update(TDalEntity entity)
     {
-        return Mapper.Map(RepoDbSet.Update(Mapper.Map(entity)).Entity)!;
+        TDomainEntity domainEntity = Mapper.Map(entity)!;
+        domainEntity.UpdatedAt = DateTime.Now.ToUniversalTime();
+        domainEntity.UpdatedBy = "api";
+        return Mapper.Map(RepoDbSet.Update(domainEntity).Entity)!;
     }
 
     public virtual int Remove(TDalEntity entity)

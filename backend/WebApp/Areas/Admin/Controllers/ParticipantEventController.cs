@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/ParticipantEvent
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.ExerciseMadeFors.Include(p => p.Firm).Include(p => p.PaymentMethod).Include(p => p.Person);
+            var appDbContext = _context.ParticipantEvents.Include(p => p.Firm).Include(p => p.PaymentMethod).Include(p => p.Person);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var participantEvent = await _context.ExerciseMadeFors
+            var participantEvent = await _context.ParticipantEvents
                 .Include(p => p.Firm)
                 .Include(p => p.PaymentMethod)
                 .Include(p => p.Person)
@@ -51,9 +51,9 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/ParticipantEvent/Create
         public IActionResult Create()
         {
-            ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes");
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy");
-            ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes");
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes");
+            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy");
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes");
             return View();
         }
 
@@ -71,9 +71,9 @@ namespace WebApp.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes", participantEvent.FirmId);
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", participantEvent.PaymentMethodId);
-            ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes", participantEvent.PersonId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy", participantEvent.PaymentMethodId);
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes", participantEvent.PersonId);
             return View(participantEvent);
         }
 
@@ -85,14 +85,14 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var participantEvent = await _context.ExerciseMadeFors.FindAsync(id);
+            var participantEvent = await _context.ParticipantEvents.FindAsync(id);
             if (participantEvent == null)
             {
                 return NotFound();
             }
-            ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes", participantEvent.FirmId);
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", participantEvent.PaymentMethodId);
-            ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes", participantEvent.PersonId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy", participantEvent.PaymentMethodId);
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes", participantEvent.PersonId);
             return View(participantEvent);
         }
 
@@ -128,9 +128,9 @@ namespace WebApp.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FirmId"] = new SelectList(_context.Exercises, "Id", "AdditionalNotes", participantEvent.FirmId);
-            ViewData["PaymentMethodId"] = new SelectList(_context.ExerciseResults, "Id", "CreatedBy", participantEvent.PaymentMethodId);
-            ViewData["PersonId"] = new SelectList(_context.Games, "Id", "AdditionalNotes", participantEvent.PersonId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy", participantEvent.PaymentMethodId);
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes", participantEvent.PersonId);
             return View(participantEvent);
         }
 
@@ -142,7 +142,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var participantEvent = await _context.ExerciseMadeFors
+            var participantEvent = await _context.ParticipantEvents
                 .Include(p => p.Firm)
                 .Include(p => p.PaymentMethod)
                 .Include(p => p.Person)
@@ -160,10 +160,10 @@ namespace WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var participantEvent = await _context.ExerciseMadeFors.FindAsync(id);
+            var participantEvent = await _context.ParticipantEvents.FindAsync(id);
             if (participantEvent != null)
             {
-                _context.ExerciseMadeFors.Remove(participantEvent);
+                _context.ParticipantEvents.Remove(participantEvent);
             }
 
             await _context.SaveChangesAsync();
@@ -172,7 +172,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         private bool ParticipantEventExists(Guid id)
         {
-            return _context.ExerciseMadeFors.Any(e => e.Id == id);
+            return _context.ParticipantEvents.Any(e => e.Id == id);
         }
     }
 }

@@ -10,5 +10,5 @@ public class Event : BaseEntityIdMetadata
     public string Name { get; set; } = default!;
     public string AdditionalInformation { get; set; } = default!;
     
-    public List<ParticipantEvent>? ParticipantEvents { get; set; }
+    public ICollection<ParticipantEvent>? ParticipantEvents { get; set; }
 }

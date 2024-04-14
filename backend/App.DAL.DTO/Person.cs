@@ -9,5 +9,5 @@ public class Person : BaseEntityId
     public int PersonalIdentificationNumber { get; set; }
     public string AdditionalNotes { get; set; } = default!;
     
-    public List<ParticipantEvent>? ParticipantEvents { get; set; }
+    public ICollection<ParticipantEvent>? ParticipantEvents { get; set; }
 }

@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/Person
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Games.ToListAsync());
+            return View(await _context.Persons.ToListAsync());
         }
 
         // GET: Admin/Person/Details/5
@@ -34,7 +34,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Games
+            var person = await _context.Persons
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
@@ -75,7 +75,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Games.FindAsync(id);
+            var person = await _context.Persons.FindAsync(id);
             if (person == null)
             {
                 return NotFound();
@@ -126,7 +126,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Games
+            var person = await _context.Persons
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
@@ -141,10 +141,10 @@ namespace WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var person = await _context.Games.FindAsync(id);
+            var person = await _context.Persons.FindAsync(id);
             if (person != null)
             {
-                _context.Games.Remove(person);
+                _context.Persons.Remove(person);
             }
 
             await _context.SaveChangesAsync();
@@ -153,7 +153,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         private bool PersonExists(Guid id)
         {
-            return _context.Games.Any(e => e.Id == id);
+            return _context.Persons.Any(e => e.Id == id);
         }
     }
 }

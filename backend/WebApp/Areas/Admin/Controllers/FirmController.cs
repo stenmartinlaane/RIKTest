@@ -23,7 +23,7 @@ namespace WebApp.Areas.Admin.Controllers
         // GET: Admin/Firm
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Exercises.ToListAsync());
+            return View(await _context.Firms.ToListAsync());
         }
 
         // GET: Admin/Firm/Details/5
@@ -34,7 +34,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var firm = await _context.Exercises
+            var firm = await _context.Firms
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (firm == null)
             {
@@ -75,7 +75,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var firm = await _context.Exercises.FindAsync(id);
+            var firm = await _context.Firms.FindAsync(id);
             if (firm == null)
             {
                 return NotFound();
@@ -126,7 +126,7 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var firm = await _context.Exercises
+            var firm = await _context.Firms
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (firm == null)
             {
@@ -141,10 +141,10 @@ namespace WebApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var firm = await _context.Exercises.FindAsync(id);
+            var firm = await _context.Firms.FindAsync(id);
             if (firm != null)
             {
-                _context.Exercises.Remove(firm);
+                _context.Firms.Remove(firm);
             }
 
             await _context.SaveChangesAsync();
@@ -153,7 +153,7 @@ namespace WebApp.Areas.Admin.Controllers
 
         private bool FirmExists(Guid id)
         {
-            return _context.Exercises.Any(e => e.Id == id);
+            return _context.Firms.Any(e => e.Id == id);
         }
     }
 }
