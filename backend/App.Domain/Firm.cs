@@ -1,15 +1,19 @@
+using System.ComponentModel.DataAnnotations;
 using Base.Domain;
 
 namespace App.Domain;
 
 public class Firm : BaseEntityIdMetadata
 {
+    [MaxLength(256)]
     public string Name { get; set; } = default!;
+    
+    [MaxLength(256)]
     public string RegistryCode { get; set; } = default!;
     public int ParticipantCount { get; set; }
-    public string AdditionalNotes { get; set; } = default!;
     
-
+    [MaxLength(5000)]
+    public string AdditionalNotes { get; set; } = default!;
     
     public ICollection<ParticipantEvent>? ParticipantEvents { get; set; }
 }

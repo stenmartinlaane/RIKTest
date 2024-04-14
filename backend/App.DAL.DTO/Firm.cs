@@ -1,12 +1,18 @@
+using System.ComponentModel.DataAnnotations;
 using Base.Domain;
 
 namespace App.DAL.DTO;
 
 public class Firm : BaseEntityId
 {
+    [MaxLength(256)]
     public string Name { get; set; } = default!;
+    
+    [MaxLength(256)]
     public string RegistryCode { get; set; } = default!;
     public int ParticipantCount { get; set; }
+    
+    [MaxLength(5000)]
     public string AdditionalNotes { get; set; } = default!;
     
 
