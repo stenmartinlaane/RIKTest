@@ -1,10 +1,12 @@
 "use client"
 
+import HomePageContent from "@/components/HomePageContent"
+
 export default function HomePage() {
     
     return (
         <>
-          <div className='flex flex-col w-full h-full'></div>
+          <HomePageContent/>
         </>
     );
 }
