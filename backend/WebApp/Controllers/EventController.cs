@@ -95,6 +95,9 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<Event>> PostEvent(Event @event)
         {
+            Console.WriteLine(@event.Name);
+            Console.WriteLine(@event.Id);
+            
             _uow.Event.Add(@event);
             await _uow.SaveChangesAsync();
 
@@ -117,6 +120,12 @@ namespace WebApp.Controllers
             if (@event == null)
             {
                 return NotFound();
+            }
+            
+
+            foreach (var pe in await _uow.ParticipantEvent.GetAllByEventId(@event.Id))
+            {
+                await _uow.ParticipantEvent.RemoveAsync(pe);
             }
 
             await _uow.Event.RemoveAsync(@event);

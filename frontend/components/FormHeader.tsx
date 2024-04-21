@@ -1,6 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
-import EventInfo from './EventInfo'
 
 const FormHeader = () => {
   return (

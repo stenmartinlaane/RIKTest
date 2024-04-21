@@ -6,6 +6,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_Solution_Items", "0_Solut
 		Directory.Build.props = Directory.Build.props
 		.gitignore = .gitignore
 		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		.dockerignore = .dockerignore
+		registry-backend-postgres.yml = registry-backend-postgres.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_App", "1_App", "{77BFDFFC-FECE-4B4C-827B-4475D539554B}"

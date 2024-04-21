@@ -23,7 +23,7 @@ export default function Footer() {
                     <p className="text-text-on-footer-dark">Faks: 605 3186</p>
                 </FooterTextComponent>
                 <FooterTextComponent header=" ">
-                    <span><p className="text-text-on-footer-light">Harukontor: Vörus</p></span>
+                    <span><p className="text-text-on-footer-light">Harukontor: Võrus</p></span>
                     <p className="text-text-on-footer-dark">Oja tn 7 (külastusaadress)</p>
                     <p className="text-text-on-footer-dark">Telefon: 605 3330</p>
                     <p className="text-text-on-footer-dark">Faks: 605 3155</p>

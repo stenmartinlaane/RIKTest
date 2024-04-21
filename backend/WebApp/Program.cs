@@ -1,5 +1,5 @@
 using App.Contracts.DAL;
-using App.DAL.DTO;
+using App.Domain;
 using App.DAL.EF;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
@@ -39,6 +39,16 @@ apiVersioningBuilder.AddApiExplorer(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsAllowAll", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
@@ -61,6 +71,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseCors("CorsAllowAll");
+
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -94,25 +107,32 @@ static void SetupAppData(WebApplication app)
         .GetRequiredService<IServiceScopeFactory>()
         .CreateScope();
     using var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var uow = serviceScope.ServiceProvider.GetRequiredService<IAppUnitOfWork>();
     context.Database.Migrate();
 
     if (!context.PaymentMethods.Any())
     {
-        uow.PaymentMethod.Add(new PaymentMethod()
+        DateTime dt = DateTime.Now.ToUniversalTime();
+        context.PaymentMethods.Add(new PaymentMethod()
         {
             MethodName = "sularaha",
             MethodDescription = "Makse sularahas",
-            Active = true
+            Active = true,
+            UpdatedAt = dt,
+            UpdatedBy = "Intial data creation",
+            CreatedBy = "Initial data creation",
+            CreatedAt = dt
         });
-        uow.PaymentMethod.Add(new PaymentMethod()
+        context.PaymentMethods.Add(new PaymentMethod()
         {
             MethodName = "pangaülekanne",
             MethodDescription = "Makse pangaülekandega",
-            Active = true
+            Active = true,
+            UpdatedAt = dt,
+            UpdatedBy = "Intial data creation",
+            CreatedBy = "Initial data creation",
+            CreatedAt = dt
         });
         
-        uow.SaveChangesAsync();
+        context.SaveChanges();
     }
-
 }

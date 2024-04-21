@@ -51,11 +51,15 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
     public virtual TDalEntity Add(TDalEntity entity)
     {
         TDomainEntity domainEntity = Mapper.Map(entity)!;
-            DateTime creationTime = DateTime.Now.ToUniversalTime();
-            domainEntity.CreatedAt = creationTime;
-            domainEntity.CreatedBy = "api";
-            domainEntity.UpdatedAt = creationTime;
-            domainEntity.UpdatedBy = "api";
+        if (domainEntity.Id.ToString() == "00000000-0000-0000-0000-000000000000")
+        {
+            domainEntity.Id = Guid.NewGuid();
+        }
+        DateTime creationTime = DateTime.Now.ToUniversalTime();
+        domainEntity.CreatedAt = creationTime;
+        domainEntity.CreatedBy = "api";
+        domainEntity.UpdatedAt = creationTime;
+        domainEntity.UpdatedBy = "api";
         return Mapper.Map(RepoDbSet.Add(domainEntity).Entity)!;
     }
 
@@ -118,12 +122,12 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
             .ExecuteDeleteAsync();
     }
     
-    public TDalEntity? FirstOrDefault(TKey id, bool noTracking = true)
+    public virtual TDalEntity? FirstOrDefault(TKey id, bool noTracking = true)
     {
         return Mapper.Map(CreateQuery(noTracking).FirstOrDefault(m => m.Id.Equals(id)));
     }
 
-    public async Task<TDalEntity?> FirstOrDefaultAsync(TKey id, bool noTracking = true)
+    public virtual async Task<TDalEntity?> FirstOrDefaultAsync(TKey id, bool noTracking = true)
     {
         return Mapper.Map(await CreateQuery(noTracking).FirstOrDefaultAsync(m => m.Id.Equals(id)));
     }

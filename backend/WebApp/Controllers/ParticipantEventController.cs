@@ -32,7 +32,7 @@ namespace WebApp.Controllers
         [ProducesResponseType<IEnumerable<ParticipantEvent>>((int) HttpStatusCode.OK)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        public async Task<ActionResult<IEnumerable<ParticipantEvent>>> GetExerciseMadeFors()
+        public async Task<ActionResult<IEnumerable<ParticipantEvent>>> ParticipantEvents()
         {
             var res = await _uow.ParticipantEvent.GetAllAsync();
             return Ok(res);
