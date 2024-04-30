@@ -5,6 +5,8 @@ import { AppContext } from "../context/StateComponent";
 import ParticipantEvent from "@/entities/ParticipantEvent";
 import PaymentMethod from "@/entities/PaymentMethod";
 import Link from "next/link";
+import { useEventContext } from "@/context/EventContext";
+import { toast } from "react-toastify";
 
 const AddPersonForm = ({ id }: { id: string }) => {
   const [firstName, setFirstName] = useState("");
@@ -14,7 +16,7 @@ const AddPersonForm = ({ id }: { id: string }) => {
   const { paymentMethods } = useContext(AppContext);
   const [paymentMethodId, setPaymentMethodId] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const { events, setEvents } = useContext(AppContext);
+  const {event, setEvent} = useEventContext()!;
 
   useEffect(() => {
     const pmId = paymentMethods.filter((pm) => pm.active)[0]?.id ?? "";
@@ -58,23 +60,24 @@ const AddPersonForm = ({ id }: { id: string }) => {
           body: JSON.stringify(data),
         }
       );
+      console.log(res.status)
       if (res.status === 201) {
-        const resEvent = await res.json();
-        const prevEvents = events.map((event): Event => {
-          if (event.id === id) {
-            return { ...event, ...resEvent };
-          }
-          return event;
+        let participantEvent = await res.json(); 
+        setEvent(prevEvent => {
+          const updatedEvent = { ...prevEvent };
+          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent as ParticipantEvent];
+          return updatedEvent;
         });
-        setEvents(prevEvents);
+        toast.success("Eraisik üritusele lisatud.")
 
-        console.log("here");
-        console.log(await res.json());
+        
       } else if (res.status === 400 || res.status === 401) {
         const dataObj = await res.json();
         console.log(dataObj);
+        toast.error("Viga eraisiku üritusele lisamisel.")
       }
     } catch (error) {
+      console.log(error)
     } finally {
     }
   };

@@ -1,3 +1,4 @@
+import { EventProvider } from "@/context/EventContext";
 import FormHeader from "./FormHeader";
 
 export default function FormPage({
@@ -8,11 +9,13 @@ export default function FormPage({
     return(
         <>
            <div className="w-full h-full bg-white-background ">
+                <EventProvider>
                 <FormHeader></FormHeader>
                 <div className="flex-1 flex w-full">
                     <div className="w-1/5"></div>
                     {children}
                 </div>
+                </EventProvider>
             </div>  
         </>
     )

@@ -14,10 +14,11 @@ import ParticipantEvent from "@/entities/ParticipantEvent";
 import ParticipantRow from "./ParticipantRow";
 import AddPersonForm from "./AddPersonForm";
 import AddFirmForm from "./AddFirmForm";
+import { useEventContext } from "@/context/EventContext";
 
 const Participants = () => {
   const [loading, setLoading] = useState(true);
-  const [event, setEvent] = useState(new Event());
+  const {event, setEvent} = useEventContext()!;
 
   const { id } = useParams() as { id: string };
   const [participantType, setParticipantType] = useState("Person");

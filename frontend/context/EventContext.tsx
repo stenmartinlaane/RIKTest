@@ -7,9 +7,9 @@ type EventContextType = {
     setEvent: React.Dispatch<React.SetStateAction<Event>>;
   };
   
-  const EventContext = createContext<EventContextType | undefined>(undefined);
+  const EventContext = createContext<EventContextType | null>(null);
 
-export function GlobalProvider({
+export function EventProvider({
     children,
   }: Readonly<{
     children: React.ReactNode;
