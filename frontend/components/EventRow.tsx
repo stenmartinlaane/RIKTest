@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { useContext } from "react";
 import Event from "../entities/Event";
 import formatDate from "@/app/utils/dateFormater";
-import { AppContext } from "./StateComponent";
+import { AppContext } from "../context/StateComponent";
 
 const EventRow = ({ event, index }: { event: Event; index: number }) => {
   const { events, setEvents } = useContext(AppContext);

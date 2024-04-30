@@ -3,7 +3,7 @@ import EventInfo from "./EventInfo";
 import EventRow from "./EventRow";
 import Event from "@/entities/Event";
 import Spinner from "@/components/Spinner";
-import { AppContext } from "./StateComponent";
+import { AppContext } from "../context/StateComponent";
 
 const HomePageContent = () => {
   const { events, setEvents } = useContext(AppContext);

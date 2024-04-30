@@ -100,14 +100,14 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<ParticipantEvent>> PostParticipantEvent(ParticipantEvent participantEvent)
         {
-            _uow.ParticipantEvent.Add(participantEvent);
+            var updatedParticipantEvent = _uow.ParticipantEvent.Add(participantEvent);
             await _uow.SaveChangesAsync();
 
             return CreatedAtAction("GetParticipantEvent", new
             {
                 version = HttpContext.GetRequestedApiVersion()?.ToString(),
-                id = participantEvent.Id
-            }, participantEvent);
+                id = updatedParticipantEvent.Id
+            }, updatedParticipantEvent);
         }
 
         // DELETE: api/ParticipantEvent/5

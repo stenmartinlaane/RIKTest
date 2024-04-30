@@ -2,7 +2,9 @@ import Footer from "@/components/Footer";
 import { Metadata } from "next";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
-import StateComponent from "@/components/StateComponent";
+import StateComponent from "@/context/StateComponent";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "Next.js",
@@ -26,6 +28,7 @@ export default function RootLayout({
           </StateComponent>
           <Footer></Footer>
         </div>
+        <ToastContainer />
       </body>
     </html>
   );
