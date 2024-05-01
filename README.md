@@ -19,6 +19,7 @@ configure dockerfie: frontend/Dockerfile
 
 ```bash
 cd frontend
+npm install
 npm run build
 docker build .
 cd ..
