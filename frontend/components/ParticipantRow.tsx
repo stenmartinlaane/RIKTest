@@ -2,6 +2,8 @@ import ParticipantEvent from "@/entities/ParticipantEvent";
 import Link from "next/link";
 import React, { useContext } from "react";
 import { useRouter } from "next/navigation";
+import { useEventContext } from "@/context/EventContext";
+import { toast } from "react-toastify";
 
 const ParticipantRow = ({
   participantEvent,
@@ -11,10 +13,11 @@ const ParticipantRow = ({
   index: number;
 }) => {
   const router = useRouter();
+  const {event, setEvent} = useEventContext()!;
   const handleDeleteEvent = async (e: any) => {
     e.preventDefault();
     const confirmed = window.confirm(
-      "Are you sure you want to remove this participant from this event?"
+      "Kas sa oled kindel, et sa tahad seda osalejat ürtiuselt eemaldada?"
     );
 
     if (!confirmed) return;
@@ -27,8 +30,14 @@ const ParticipantRow = ({
         }
       );
       if (res.status === 204) {
-        window.location.reload();
+        setEvent(prevEvent => {
+          const updatedEvent = { ...prevEvent };
+          updatedEvent.participantEvents = updatedEvent.participantEvents.filter((pe) => pe.id !== participantEvent.id);
+          return updatedEvent;
+        });
+        toast.success("Osavõtja eemaldatud.")
       } else {
+        toast.error("Tekkis viga osavõtja eemaldamisel.")
       }
     } catch (error) {
       console.log(error);

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import EventInfo from "./EventInfo";
-import EventRow from "./EventRow";
+import EventInfo from "./event/EventInfo";
+import EventRow from "./event/EventRow";
 import Event from "@/entities/Event";
 import Spinner from "@/components/Spinner";
 import { AppContext } from "../context/StateComponent";

@@ -15,6 +15,7 @@ export default class ParticipantEvent {
     paymentMethod: PaymentMethod | null;
     eventId: string;
     event: Event | null;
+    additionalNotes: string
 
     constructor(
         id: string,
@@ -26,7 +27,8 @@ export default class ParticipantEvent {
         paymentMethodId: string,
         paymentMethod: PaymentMethod | null,
         eventId: string,
-        event: Event | null
+        event: Event | null,
+        additionalNotes: string
     ) {
         this.id = id;
         this.registerDateTime = registerDateTime;
@@ -38,5 +40,6 @@ export default class ParticipantEvent {
         this.paymentMethod = paymentMethod;
         this.eventId = eventId
         this.event = event
+        this.additionalNotes = additionalNotes
     }
 }

@@ -53,9 +53,9 @@ namespace WebApp.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "AdditionalInformation");
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes");
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "CreatedBy");
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy");
-            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes");
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "CreatedBy");
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RegisterDateTime,PersonId,FirmId,EventId,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
+        public async Task<IActionResult> Create([Bind("RegisterDateTime,PersonId,FirmId,EventId,AdditionalNotes,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
         {
             if (ModelState.IsValid)
             {
@@ -74,9 +74,9 @@ namespace WebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "AdditionalInformation", participantEvent.EventId);
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "CreatedBy", participantEvent.FirmId);
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy", participantEvent.PaymentMethodId);
-            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes", participantEvent.PersonId);
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "CreatedBy", participantEvent.PersonId);
             return View(participantEvent);
         }
 
@@ -94,9 +94,9 @@ namespace WebApp.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "AdditionalInformation", participantEvent.EventId);
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "CreatedBy", participantEvent.FirmId);
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy", participantEvent.PaymentMethodId);
-            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes", participantEvent.PersonId);
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "CreatedBy", participantEvent.PersonId);
             return View(participantEvent);
         }
 
@@ -105,7 +105,7 @@ namespace WebApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("RegisterDateTime,PersonId,FirmId,EventId,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
+        public async Task<IActionResult> Edit(Guid id, [Bind("RegisterDateTime,PersonId,FirmId,EventId,AdditionalNotes,PaymentMethodId,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt,Id")] ParticipantEvent participantEvent)
         {
             if (id != participantEvent.Id)
             {
@@ -133,9 +133,9 @@ namespace WebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "AdditionalInformation", participantEvent.EventId);
-            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "AdditionalNotes", participantEvent.FirmId);
+            ViewData["FirmId"] = new SelectList(_context.Firms, "Id", "CreatedBy", participantEvent.FirmId);
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "CreatedBy", participantEvent.PaymentMethodId);
-            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "AdditionalNotes", participantEvent.PersonId);
+            ViewData["PersonId"] = new SelectList(_context.Persons, "Id", "CreatedBy", participantEvent.PersonId);
             return View(participantEvent);
         }
 

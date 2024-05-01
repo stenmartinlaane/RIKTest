@@ -5,7 +5,6 @@ export default class Person {
     firstName: string;
     lastName: string;
     personalIdentificationNumber: number;
-    additionalNotes: string;
     participantEvents: ParticipantEvent[];
 
     constructor(
@@ -13,14 +12,12 @@ export default class Person {
         firstName: string,
         lastName: string,
         personalIdentificationNumber: number,
-        additionalNotes: string,
         participantEvents: ParticipantEvent[] 
     ) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.personalIdentificationNumber = personalIdentificationNumber;
-        this.additionalNotes = additionalNotes;
         this.participantEvents = participantEvents 
     }
 }

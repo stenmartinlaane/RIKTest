@@ -47,6 +47,17 @@ namespace WebApp.Controllers
         public async Task<ActionResult<ParticipantEvent>> GetParticipantEvent(Guid id)
         {
             var participantEvent = await _uow.ParticipantEvent.FirstOrDefaultAsync(id);
+            
+            Console.WriteLine("debughere");
+            if (participantEvent!.Person == null)
+            {
+                Console.WriteLine("person is null");
+            }
+            else
+            {
+                Console.WriteLine(participantEvent!.Person!.FirstName);
+            }
+            
 
             if (participantEvent == null)
             {
@@ -70,12 +81,17 @@ namespace WebApp.Controllers
             {
                 return BadRequest();
             }
-
-            _context.Entry(participantEvent).State = EntityState.Modified;
+            
+            var updatedParticipantEvent = _uow.ParticipantEvent.Update(participantEvent);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveChangesAsync();
+                return CreatedAtAction("PutParticipantEvent", new
+                {
+                    version = HttpContext.GetRequestedApiVersion()?.ToString(),
+                    id = updatedParticipantEvent.Id
+                }, updatedParticipantEvent);
             }
             catch (DbUpdateConcurrencyException)
             {

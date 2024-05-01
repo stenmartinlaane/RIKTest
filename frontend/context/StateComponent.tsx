@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createContext } from "react";
 import Event from "@/entities/Event";
 import PaymentMethod from "@/entities/PaymentMethod";
+import { EventProvider } from "./EventContext";
 
 export default function StateComponent({
   children,
@@ -36,7 +37,9 @@ export default function StateComponent({
     <AppContext.Provider
       value={{ events, setEvents, paymentMethods, setPaymentMethods }}
     >
-      {children}
+      <EventProvider>
+        {children}
+      </EventProvider>
     </AppContext.Provider>
   );
 }

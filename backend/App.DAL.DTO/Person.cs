@@ -13,9 +13,6 @@ public class Person : BaseEntityId
     public string LastName { get; set; } = default!;
     public int PersonalIdentificationNumber { get; set; }
     
-    [MaxLength(1500)]
-    public string AdditionalNotes { get; set; } = default!;
-    
     [JsonIgnore]
     public ICollection<ParticipantEvent>? ParticipantEvents { get; set; }
 }

@@ -12,8 +12,8 @@ import Spinner from "./Spinner";
 import formatDate from "@/app/utils/dateFormater";
 import ParticipantEvent from "@/entities/ParticipantEvent";
 import ParticipantRow from "./ParticipantRow";
-import AddPersonForm from "./AddPersonForm";
-import AddFirmForm from "./AddFirmForm";
+import AddPersonForm from "./person/AddPersonForm";
+import AddFirmForm from "./firm/AddFirmForm";
 import { useEventContext } from "@/context/EventContext";
 
 const Participants = () => {
@@ -43,8 +43,16 @@ const Participants = () => {
       }
       return null;
     };
-    fetchEvent();
+    if (event.id !== id) {
+          fetchEvent();
+    } else {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    console.log(event)
+  }, [event])
 
   const handleParticipantTypeChange = (event: any) => {
     setParticipantType(event.target.value);

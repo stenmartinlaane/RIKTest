@@ -74,4 +74,57 @@ public class ParticipantEventRepository : BaseEntityRepository<App.Domain.Partic
         
         return Mapper.Map(RepoDbSet.Add(domainEntity).Entity)!;
     }
+    
+    
+    public virtual async Task<App.DAL.DTO.ParticipantEvent?> FirstOrDefaultAsync(Guid id, bool noTracking = true)
+    {
+        return Mapper.Map(await CreateQuery(noTracking)
+            .Include(pe => pe.Firm)
+            .Include(pe => pe.Person)
+            .FirstOrDefaultAsync(m => m.Id.Equals(id)));
+    }
+    
+    public override App.DAL.DTO.ParticipantEvent Update(App.DAL.DTO.ParticipantEvent entity)
+    {
+        App.Domain.ParticipantEvent domainEntity = Mapper.Map(entity)!;
+        domainEntity.UpdatedAt = DateTime.Now.ToUniversalTime();
+        domainEntity.UpdatedBy = "api";
+        RepoDbContext.ParticipantEvents.Where(pe => pe.Id == domainEntity.Id)
+            .ExecuteUpdate(s => s
+                .SetProperty(pe => pe.RegisterDateTime, domainEntity.RegisterDateTime)
+                .SetProperty(pe => pe.PersonId, domainEntity.PersonId)
+                .SetProperty(pe => pe.FirmId, domainEntity.FirmId)
+                .SetProperty(pe => pe.PaymentMethodId, domainEntity.PaymentMethodId)
+                .SetProperty(pe => pe.AdditionalNotes, domainEntity.AdditionalNotes)
+                .SetProperty(pe => pe.UpdatedAt, domainEntity.UpdatedAt)
+                .SetProperty(pe => pe.UpdatedBy, domainEntity.UpdatedBy)
+            );
+
+        if (domainEntity.Person != null)
+        {
+            RepoDbContext.Persons.Where(p => p.Id == domainEntity.PersonId)
+                .ExecuteUpdate(s => s
+                    .SetProperty(p => p.FirstName, domainEntity.Person.FirstName)
+                    .SetProperty(p => p.LastName, domainEntity.Person.LastName)
+                    .SetProperty(p => p.PersonalIdentificationNumber, domainEntity.Person.PersonalIdentificationNumber)
+                    .SetProperty(p => p.UpdatedAt, domainEntity.UpdatedAt)
+                    .SetProperty(p => p.UpdatedBy, domainEntity.UpdatedBy)
+                );
+        }
+        if (domainEntity.Firm != null)
+        {
+            RepoDbContext.Firms.Where(f => f.Id == domainEntity.FirmId)
+                .ExecuteUpdate(s => s
+                    .SetProperty(f => f.Name, domainEntity.Firm.Name)
+                    .SetProperty(f => f.RegistryCode, domainEntity.Firm.RegistryCode)
+                    .SetProperty(f => f.ParticipantCount, domainEntity.Firm.ParticipantCount)
+                    .SetProperty(f => f.UpdatedAt, domainEntity.UpdatedAt)
+                    .SetProperty(f => f.UpdatedBy, domainEntity.UpdatedBy)
+                );
+        }
+
+        
+
+        return Mapper.Map(domainEntity)!;
+    }
 }

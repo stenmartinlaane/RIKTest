@@ -5,7 +5,6 @@ export default class Firm {
     name: string;
     registryCode: string;
     participantCount: number;
-    additionalNotes: string;
     participantEvents: ParticipantEvent[];
 
     constructor(
@@ -13,14 +12,12 @@ export default class Firm {
         name: string,
         registryCode: string,
         participantCount: number,
-        additionalNotes: string,
         participantEvents: ParticipantEvent[] 
     ) {
         this.id = id;
         this.name = name;
         this.registryCode = registryCode;
         this.participantCount = participantCount;
-        this.additionalNotes = additionalNotes;
         this.participantEvents = participantEvents 
     }
 }

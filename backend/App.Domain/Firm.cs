@@ -14,9 +14,6 @@ namespace App.Domain
         public string RegistryCode { get; set; } = default!;
         public int ParticipantCount { get; set; }
 
-        [MaxLength(5000)]
-        public string AdditionalNotes { get; set; } = default!;
-
         [JsonIgnore]
         public ICollection<ParticipantEvent>? ParticipantEvents { get; set; }
     }

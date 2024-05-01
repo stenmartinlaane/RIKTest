@@ -72,6 +72,25 @@
       <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Details.cshtml" />
       <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Edit.cshtml" />
       <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Index.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Event\Create.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Event\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Event\Details.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Event\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Event\Index.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\ParticipantEvent\Create.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\ParticipantEvent\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\ParticipantEvent\Details.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\ParticipantEvent\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\ParticipantEvent\Index.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Create.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Details.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Areas\Admin\Views\Person\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Areas\Admin\Controllers\" />
     </ItemGroup>
 
 </Project>
