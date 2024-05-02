@@ -82,7 +82,7 @@ const PersonDetail = ({participantEvent}: {participantEvent: ParticipantEvent}) 
 
   return (
     <>
-        <>
+      <h2>Osavõtja info</h2>
       <form className="w-1/2 py-2" onSubmit={handleSubmit}>
         <div className="w-100 flex my-3">
           <div className="w-1/4">
@@ -179,7 +179,6 @@ const PersonDetail = ({participantEvent}: {participantEvent: ParticipantEvent}) 
           </div>
         </div>
       </form>
-    </>
     </>
   )
 }
