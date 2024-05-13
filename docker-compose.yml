@@ -11,6 +11,7 @@ services:
     hostname: registry-system-backend
     environment:
       - ConnectionStrings:DefaultConnection=Host=host.docker.internal;Port=5432;Database=backend;Username=postgres;Password=postgres
+    restart: on-failure
     networks: 
       - registry-system-network
 
