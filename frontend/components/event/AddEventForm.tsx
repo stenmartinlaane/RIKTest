@@ -39,12 +39,12 @@ function AddEventForm() {
         router.push("/");
       } else if (res.status === 400 || res.status === 401) {
         const dataObj = await res.json();
-        toast.error("error");
+        toast.error(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`);
       } else {
-        toast.error("error");
+        toast.error(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`);
       }
     } catch (error) {
-      console.log("error");
+      console.log(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`);
       toast.error("error");
     } finally {
     }

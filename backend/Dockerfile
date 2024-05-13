@@ -39,4 +39,5 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0.3 AS runtime
 WORKDIR /app
 #ENV ConnectionStrings:DefaultConnection="Host=host.docker.internal;Port=7899;Database=backend;Username=postgres;Password=postgres"
 COPY --from=build /app/WebApp/out ./
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "WebApp.dll"]
