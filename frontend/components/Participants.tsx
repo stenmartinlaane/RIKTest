@@ -103,8 +103,8 @@ const Participants = () => {
         <h2>Osavõtjate lisamine</h2>
 
         <div className="w-100 flex my-3">
-          <div className="w-1/4"></div>
-          <div className="w-3/4 flex">
+        <div style={{ width: '12.5%' }}></div>
+          <div className="w-2/4 flex">
             <div className="w-1/2 flex">
               <div className="pr-2">
                 <input
