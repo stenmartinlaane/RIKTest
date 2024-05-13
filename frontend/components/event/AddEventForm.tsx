@@ -44,7 +44,6 @@ function AddEventForm() {
         toast.error(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`);
       }
     } catch (error) {
-      console.log(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`);
       toast.error("error");
     } finally {
     }

@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import Event from "../../entities/Event";
 import formatDate from "@/app/utils/dateFormater";
 import { AppContext } from "../../context/StateComponent";
+import { toast } from "react-toastify";
 
 const EventRow = ({ event, index }: { event: Event; index: number }) => {
   const { events, setEvents } = useContext(AppContext);
@@ -10,7 +11,7 @@ const EventRow = ({ event, index }: { event: Event; index: number }) => {
   const handleDeleteEvent = async (e: any) => {
     e.preventDefault();
     const confirmed = window.confirm(
-      "Are you sure you want to delete this event?"
+      "Kas sa oled kindel et soovid seda üritust kustutada?"
     );
 
     if (!confirmed) return;
@@ -28,7 +29,7 @@ const EventRow = ({ event, index }: { event: Event; index: number }) => {
 
       if (res.status === 204) {
         const updatedEvents = events.filter((e) => e.id !== event.id);
-
+        toast.success("Üritus kustutatud.")
         setEvents(updatedEvents);
       } else {
       }

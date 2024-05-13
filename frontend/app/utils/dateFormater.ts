@@ -7,7 +7,6 @@ export default function formatDate(dateString: string) {
 }
 
 export function convertToISO8601(dateString: string): string {
-  console.log(dateString);
   const match = dateString.match(/^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/);
   if (!match) {
     throw new Error("Invalid input format. Expected format: dd.mm.yyyy hh:mm");

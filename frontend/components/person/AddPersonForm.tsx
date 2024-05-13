@@ -47,8 +47,6 @@ const AddPersonForm = ({ id }: { id: string }) => {
       null,
       additionalInfo
     );
-
-    console.log(JSON.stringify(data));
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1/ParticipantEvent`,

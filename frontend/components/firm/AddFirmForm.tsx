@@ -52,7 +52,6 @@ const AddFirmForm = ({ id }: { id: string }) => {
           body: JSON.stringify(data),
         }
       );
-      console.log(res.status)
       if (res.status === 201) {
         let participantEvent = await res.json(); 
         setEvent(prevEvent => {
