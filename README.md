@@ -10,5 +10,5 @@ https://github.com/stenmartinlaane/RIKTest.git
 cd RIKTest
 docker-compose up --build
 ```
-access frontend at localhost:3000
-access backend api documentation at localhost:7898/swagger
+access frontend at http://localhost:3000/
+access backend api documentation at http://localhost:7898/swagger/index.html
