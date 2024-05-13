@@ -1,44 +1,15 @@
 ## Registry System
 
 ## deployment
-
 have docker version 24.0.6 or later installed https://docs.docker.com/get-docker/
-
 have git installed https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
+run the following commands
 ```bash
 https://github.com/stenmartinlaane/RIKTest.git
 cd RIKTest
+docker-compose up --build
 ```
-
-## Building frontend docker image
-
-have npm 9.8.0 or later installed https://docs.npmjs.com/cli/v8/commands/npm-install
-
-configure dockerfie: frontend/Dockerfile
-
-```bash
-cd frontend
-npm install
-npm run build
-docker build .
-cd ..
-```
-
-## Building backend and postgres database together
-
-```bash
-cd backend
-docker-compose -f registry-backend-postgres.yml build
-cd ..
-```
-
-make account to dockerhub. Free uploads are public!
-
-upload images to dockerhub.
-
-download images to hostmachine.
-
-run images on host machine:
-docker run -e NEXT_PUBLIC_BACKEND_SERVER="http://new_backend_server_address:port" -p 8080:80 frontend_image
-docker run backend_db_image
+access frontend at localhost:3000
+access backend admin controll at localhost:7898
+access backend api documentation at localhost:7898/swagger
