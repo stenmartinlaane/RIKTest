@@ -27,6 +27,7 @@ services:
       - ./frontend/.env.local
     environment:
       - NEXT_PUBLIC_BACKEND_SERVER=registry-system-backend:7898;
+    restart: on-failure
     networks: 
       - registry-system-network
   

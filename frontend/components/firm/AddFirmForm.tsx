@@ -5,6 +5,7 @@ import { AppContext } from "../../context/StateComponent";
 import PaymentMethod from "@/entities/PaymentMethod";
 import { useEventContext } from "@/context/EventContext";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const AddFirmForm = ({ id }: { id: string }) => {
   const [name, setName] = useState("");
@@ -159,9 +160,11 @@ const AddFirmForm = ({ id }: { id: string }) => {
         </div>
 
         <div className="flex space-x-4">
-          <div className="bg-secondary p-2 rounded">
-            <button>Tagasi</button>
-          </div>
+          <Link href="/">
+            <div className="bg-secondary p-2 rounded">
+              <button>Tagasi</button>
+            </div>
+          </Link>
 
           <div className="bg-primary p-2 rounded">
             <button type="submit">Salvesta</button>
