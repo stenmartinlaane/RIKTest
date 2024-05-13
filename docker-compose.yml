@@ -11,6 +11,8 @@ services:
     hostname: registry-system-backend
     environment:
       - ConnectionStrings:DefaultConnection=Host=host.docker.internal;Port=5432;Database=backend;Username=postgres;Password=postgres
+    networks: 
+      - registry-system-network
 
   registry-system-frontend:
     container_name: registry-system-frontend
@@ -25,6 +27,8 @@ services:
       - ./frontend/.env.local
     environment:
       - NEXT_PUBLIC_BACKEND_SERVER=registry-system-backend:7898;
+    networks: 
+      - registry-system-network
   
   sql:
     image: postgres:16
@@ -42,6 +46,12 @@ services:
       options:
         max-size: 10m
         max-file: 3
+    networks: 
+      - registry-system-network
         
 volumes:
   sql-volume:
+
+networks:
+  registry-system-network:
+    driver: bridge
