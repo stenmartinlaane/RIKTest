@@ -1,0 +1,47 @@
+services:
+  registry-system-backend:
+    container_name: registry-system-backend
+    depends_on:
+      - sql
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports: 
+    - "7898:8080"
+    hostname: registry-system-backend
+    environment:
+      - ConnectionStrings:DefaultConnection=Host=host.docker.internal;Port=5432;Database=backend;Username=postgres;Password=postgres
+
+  registry-system-frontend:
+    container_name: registry-system-frontend
+    depends_on:
+      - registry-system-backend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports: 
+    - "3000:3000"
+    env_file:
+      - ./frontend/.env.local
+    environment:
+      - NEXT_PUBLIC_BACKEND_SERVER=registry-system-backend:7898;
+  
+  sql:
+    image: postgres:16
+    container_name: registrySystem-sql
+    ports:
+      # external: internal
+      - 5432:5432
+    volumes:
+      - sql-volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    restart: on-failure
+    logging:
+      options:
+        max-size: 10m
+        max-file: 3
+        
+volumes:
+  sql-volume:
