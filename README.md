@@ -11,5 +11,4 @@ cd RIKTest
 docker-compose up --build
 ```
 access frontend at localhost:3000
-access backend admin controll at localhost:7898
 access backend api documentation at localhost:7898/swagger
