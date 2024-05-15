@@ -1,6 +1,5 @@
 services:
   registry-system-backend:
-    image: stenmartinlaane/registry-system-backend:v1.0
     container_name: registry-system-backend
     depends_on:
       - sql
@@ -15,10 +14,12 @@ services:
     restart: on-failure
 
   registry-system-frontend:
-    image: stenmartinlaane/registry-system-frontend:v1.0
     container_name: registry-system-frontend
     depends_on:
       - registry-system-backend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports: 
     - "3000:3000"
     env_file:

@@ -6,6 +6,16 @@ import React, {
   useState,
   Dispatch,
 } from "react";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from 'react-share';
 import { useParams } from "next/navigation";
 import Event from "@/entities/Event";
 import Spinner from "./Spinner";
@@ -60,6 +70,11 @@ const Participants = () => {
 
   return (
     <EventContext.Provider value={{ event, setEvent }}>
+        <FacebookShareButton
+          url="https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine"
+          hashtag="testhasthag"
+        ><FacebookIcon size={40} round={true} /></FacebookShareButton>
+        
       <div className="w-4/5 h-auto p-8">
         {loading && <Spinner loading={loading} />}
         {!loading && event && (
