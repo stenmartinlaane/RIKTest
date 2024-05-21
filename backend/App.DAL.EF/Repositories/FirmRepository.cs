@@ -1,4 +1,5 @@
 using App.Contracts.DAL.Repositories;
+using App.DAL.DTO;
 using AutoMapper;
 using Base.DAL.EF;
 using Microsoft.EntityFrameworkCore;
@@ -12,4 +13,5 @@ public class FirmRepository : BaseEntityRepository<App.Domain.Firm, App.DAL.DTO.
         base(dbContext, new DalDomainMapper<App.Domain.Firm, App.DAL.DTO.Firm>(mapper))
     {
     }
+    
 }

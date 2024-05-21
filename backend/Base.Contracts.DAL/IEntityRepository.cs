@@ -1,29 +1,28 @@
 ﻿using Base.Contracts.Domain;
-using Base.Domain;
 
 namespace Base.Contracts.DAL;
 
 public interface IEntityRepository<TEntity> : IEntityRepository<TEntity, Guid>
-    where TEntity : BaseEntityId<Guid>
+    where TEntity : class, IDomainEntityId
 {
 }
 
 public interface IEntityRepository<TEntity, TKey>
-    where TEntity : BaseEntityId<TKey>
+    where TEntity : class, IDomainEntityId<TKey>
     where TKey : IEquatable<TKey>
 {
     TEntity Add(TEntity entity);
     TEntity Update(TEntity entity);
-    int Remove(TEntity entity);
-    int Remove(TKey id);
+    int Remove(TEntity entity, TKey? userId = default);
+    int Remove(TKey id, TKey? userId = default);
 
-    TEntity? FirstOrDefault(TKey id, bool noTracking = true);
-    IEnumerable<TEntity> GetAll(bool noTracking = true);
-    bool Exists(TKey id);
+    TEntity? FirstOrDefault(TKey id, TKey? userId = default, bool noTracking = true);
+    IEnumerable<TEntity> GetAll(TKey? userId = default, bool noTracking = true);
+    bool Exists(TKey id, TKey? userId = default);
 
-    Task<TEntity?> FirstOrDefaultAsync(TKey id, bool noTracking = true);
-    Task<IEnumerable<TEntity>> GetAllAsync(bool noTracking = true);
-    Task<bool> ExistsAsync(TKey id);
-    Task<int> RemoveAsync(TEntity entity);
-    Task<int> RemoveAsync(TKey id);
+    Task<TEntity?> FirstOrDefaultAsync(TKey id, TKey? userId = default, bool noTracking = true);
+    Task<IEnumerable<TEntity>> GetAllAsync(TKey? userId = default, bool noTracking = true);
+    Task<bool> ExistsAsync(TKey id, TKey? userId = default);
+    Task<int> RemoveAsync(TEntity entity, TKey? userId = default);
+    Task<int> RemoveAsync(TKey id, TKey? userId = default);
 }

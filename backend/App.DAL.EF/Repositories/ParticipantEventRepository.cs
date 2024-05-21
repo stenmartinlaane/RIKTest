@@ -4,6 +4,7 @@ using AutoMapper;
 using Base.Contracts.DAL;
 using Base.DAL.EF;
 using Microsoft.EntityFrameworkCore;
+using Event = App.DAL.DTO.Event;
 
 namespace App.DAL.EF.Repositories;
 
@@ -21,9 +22,9 @@ public class ParticipantEventRepository : BaseEntityRepository<App.Domain.Partic
         PersonMapper = new DalDomainMapper<App.Domain.Person, App.DAL.DTO.Person>(mapper);;
     }
     
-    public async Task<IEnumerable<App.DAL.DTO.ParticipantEvent>> GetAllByEventId(Guid EventId, bool noTracking = true)
+    public async Task<IEnumerable<App.DAL.DTO.ParticipantEvent>> GetAllByEventId(Guid EventId, Guid userId = default, bool noTracking = true)
     {
-        return (await CreateQuery(noTracking)
+        return (await CreateQuery(userId, noTracking)
                 .Where(pe => pe.EventId == EventId)
                 .ToListAsync())
             .Select(pe => Mapper.Map(pe));
@@ -76,9 +77,9 @@ public class ParticipantEventRepository : BaseEntityRepository<App.Domain.Partic
     }
     
     
-    public virtual async Task<App.DAL.DTO.ParticipantEvent?> FirstOrDefaultAsync(Guid id, bool noTracking = true)
+    public virtual async Task<App.DAL.DTO.ParticipantEvent?> FirstOrDefaultAsync(Guid id, Guid userId = default, bool noTracking = true)
     {
-        return Mapper.Map(await CreateQuery(noTracking)
+        return Mapper.Map(await CreateQuery(userId, noTracking)
             .Include(pe => pe.Firm)
             .Include(pe => pe.Person)
             .FirstOrDefaultAsync(m => m.Id.Equals(id)));
@@ -126,5 +127,10 @@ public class ParticipantEventRepository : BaseEntityRepository<App.Domain.Partic
         
 
         return Mapper.Map(domainEntity)!;
+    }
+
+    public Task<IEnumerable<Event>> GetAllSortedAsync(Guid userId)
+    {
+        throw new NotImplementedException();
     }
 }

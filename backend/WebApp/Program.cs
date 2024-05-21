@@ -1,10 +1,17 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using App.BLL;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
 using App.Domain;
 using App.DAL.EF;
+using App.Domain.Identity;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApp;
 
@@ -13,14 +20,47 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<IAppUnitOfWork, AppUOW>();
+builder.Services.AddScoped<IAppBLL, AppBLL>();
+
+builder.Services
+    .AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddDefaultUI()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// clear default claims
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+builder.Services
+    .AddAuthentication()
+    .AddCookie(options => { options.SlidingExpiration = true; })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidIssuer = builder.Configuration.GetValue<string>("JWT:issuer"),
+            ValidAudience = builder.Configuration.GetValue<string>("JWT:audience"),
+            IssuerSigningKey =
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        builder.Configuration.GetValue<string>("JWT:issuer")
+                    )
+                ),
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
 
 builder.Services.AddAutoMapper(
-    typeof(App.DAL.EF.AutoMapperProfile)
+    typeof(App.DAL.EF.AutoMapperProfile),
+    typeof(App.BLL.AutoMapperProfile),
+    typeof(WebApp.Helpers.AutoMapperProfile)
 );
 
 var apiVersioningBuilder = builder.Services.AddApiVersioning(options =>
@@ -53,12 +93,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddControllersWithViews();
+
+// ===================================================
 var app = builder.Build();
+// ===================================================
 
 SetupAppData(app);
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -74,6 +122,11 @@ app.UseAuthorization();
 
 app.UseCors("CorsAllowAll");
 
+app.UseRequestLocalization(options:
+    app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value!
+);
+
+app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -107,7 +160,43 @@ static void SetupAppData(WebApplication app)
         .GetRequiredService<IServiceScopeFactory>()
         .CreateScope();
     using var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.Migrate();
+    
+    if (!context.Database.ProviderName!.Contains("InMemory"))
+    {
+        context.Database.Migrate();
+    }
+    
+    using var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    using var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+    
+    var res = roleManager.CreateAsync(new AppRole()
+    {
+        Name = "Admin"
+    }).Result;
+
+    if (!res.Succeeded)
+    {
+        Console.WriteLine(res.ToString());
+    }
+
+    var user = new AppUser()
+    {
+        Email = "admin@eesti.ee",
+        UserName = "admin@eesti.ee",
+        FirstName = "Admin",
+        LastName = "Eesti"
+    };
+    res = userManager.CreateAsync(user, "Kala.maja1").Result;
+    if (!res.Succeeded)
+    {
+        Console.WriteLine(res.ToString());
+    }
+
+    res = userManager.AddToRoleAsync(user, "Admin").Result;
+    if (!res.Succeeded)
+    {
+        Console.WriteLine(res.ToString());
+    }
 
     if (!context.PaymentMethods.Any())
     {

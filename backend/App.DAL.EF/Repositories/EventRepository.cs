@@ -15,10 +15,10 @@ public class EventRepository : BaseEntityRepository<App.Domain.Event, App.DAL.DT
     {
     }
     
-    public override async Task<App.DAL.DTO.Event?> FirstOrDefaultAsync(Guid id, bool noTracking = true)
+    public new async Task<App.DAL.DTO.Event?> FirstOrDefaultAsync(Guid id, Guid userId = default, bool noTracking = true)
     {
         return Mapper.Map(
-            await CreateQuery(noTracking)
+            await CreateQuery(userId, noTracking)
                 .Include(e => e.ParticipantEvents)
                 .ThenInclude(pe => pe.Person)
                 .Include(e => e.ParticipantEvents)
