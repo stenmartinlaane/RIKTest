@@ -3,7 +3,7 @@
 import FormPage from "@/components/FormPage";
 import Participants from "@/components/Participants";
 
-export default function PerticipantDetailsPage() {
+export default function ParticipantDetailsPage() {
     
     return (
         <>
