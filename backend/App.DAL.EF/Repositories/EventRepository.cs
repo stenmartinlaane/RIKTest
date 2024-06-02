@@ -14,8 +14,9 @@ public class EventRepository : BaseEntityRepository<App.Domain.Event, App.DAL.DT
         base(dbContext, new DalDomainMapper<App.Domain.Event, App.DAL.DTO.Event>(mapper))
     {
     }
-    
-    public new async Task<App.DAL.DTO.Event?> FirstOrDefaultAsync(Guid id, Guid userId = default, bool noTracking = true)
+
+    public new async Task<App.DAL.DTO.Event?> FirstOrDefaultAsync(Guid id, Guid userId = default,
+        bool noTracking = true)
     {
         return Mapper.Map(
             await CreateQuery(userId, noTracking)
@@ -24,6 +25,13 @@ public class EventRepository : BaseEntityRepository<App.Domain.Event, App.DAL.DT
                 .Include(e => e.ParticipantEvents)
                 .ThenInclude(pe => pe.Firm)
                 .FirstOrDefaultAsync(m => m.Id.Equals(id))
-            );
+        );
+    }
+
+    public new async Task<int> RemoveAsync(Guid id, Guid userId = default)
+    {
+        return await CreateQuery(userId)
+            .Where(e => e.Id.Equals(id) && e.AppUserId == userId)
+            .ExecuteDeleteAsync();
     }
 }

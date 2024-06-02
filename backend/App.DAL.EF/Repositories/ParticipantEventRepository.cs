@@ -24,13 +24,20 @@ public class ParticipantEventRepository : BaseEntityRepository<App.Domain.Partic
     
     public async Task<IEnumerable<App.DAL.DTO.ParticipantEvent>> GetAllByEventId(Guid EventId, Guid userId = default, bool noTracking = true)
     {
+        if (userId == new Guid())
+        {
+            return (await CreateQuery(userId, noTracking)
+                    .Where(pe => pe.EventId == EventId)
+                    .ToListAsync())
+                .Select(pe => Mapper.Map(pe));
+        }
         return (await CreateQuery(userId, noTracking)
-                .Where(pe => pe.EventId == EventId)
+                .Where(pe => pe.EventId == EventId && pe.Event!.AppUserId == userId)
                 .ToListAsync())
             .Select(pe => Mapper.Map(pe));
     }
     
-    public override App.DAL.DTO.ParticipantEvent Add(App.DAL.DTO.ParticipantEvent entity)
+    public virtual App.DAL.DTO.ParticipantEvent Add(App.DAL.DTO.ParticipantEvent entity, Guid? userId = default)
     {
         App.Domain.ParticipantEvent domainEntity = Mapper.Map(entity)!;
         DateTime creationTime = DateTime.Now.ToUniversalTime();
@@ -85,7 +92,7 @@ public class ParticipantEventRepository : BaseEntityRepository<App.Domain.Partic
             .FirstOrDefaultAsync(m => m.Id.Equals(id)));
     }
     
-    public override App.DAL.DTO.ParticipantEvent Update(App.DAL.DTO.ParticipantEvent entity)
+    public virtual App.DAL.DTO.ParticipantEvent? Update(App.DAL.DTO.ParticipantEvent entity, Guid userId = default)
     {
         App.Domain.ParticipantEvent domainEntity = Mapper.Map(entity)!;
         domainEntity.UpdatedAt = DateTime.Now.ToUniversalTime();

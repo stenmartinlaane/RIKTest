@@ -20,7 +20,7 @@ function ParticipantDetailsForm() {
     const fetchParticipantEvent = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/participantEvent/${id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/participantEvent/${id}`, {credentials: 'include'}
         );
         if (res.status === 200) {
           const data = await res.json();

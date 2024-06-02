@@ -27,7 +27,9 @@ const ParticipantRow = ({
         `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/participantEvent/${participantEvent.id}`,
         {
           method: "DELETE",
+          credentials: 'include'
         }
+        
       );
       if (res.status === 204) {
         setEvent(prevEvent => {
@@ -44,7 +46,7 @@ const ParticipantRow = ({
     }
   };
 
-  if (participantEvent.person !== null) {
+  if (participantEvent.person !== null && participantEvent.person !== undefined) {
     const participant = participantEvent.person;
     return (
       <div className="flex">
@@ -72,7 +74,7 @@ const ParticipantRow = ({
         </div>
       </div>
     );
-  } else if (participantEvent.firm !== null) {
+  } else if (participantEvent.firm !== null && participantEvent.firm !== undefined) {
     const participant = participantEvent.firm;
     return (
       <div className="flex">

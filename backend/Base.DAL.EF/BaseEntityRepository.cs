@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Reflection;
+using AutoMapper;
 using Base.Contracts.DAL;
 using Base.Contracts.Domain;
 using Base.Domain;
@@ -57,9 +58,15 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
         return query;
     }
 
-    public virtual TDalEntity Add(TDalEntity entity)
+    public virtual TDalEntity Add(TDalEntity entity, TKey? userId = default)
     {
         TDomainEntity domainEntity = Mapper.Map(entity)!;
+        Type type = typeof(TDomainEntity);
+        PropertyInfo? propertyInfo = type.GetProperty("AppUserId");
+        if (propertyInfo != null && propertyInfo.PropertyType == typeof(Guid) && !EqualityComparer<TKey>.Default.Equals(userId, default(TKey)))
+        {
+            propertyInfo.SetValue(domainEntity, userId);
+        }
         if (domainEntity.Id.ToString() == "00000000-0000-0000-0000-000000000000")
         {
             domainEntity.Id = Guid.NewGuid();
@@ -72,7 +79,7 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
         return Mapper.Map(RepoDbSet.Add(domainEntity).Entity)!;
     }
 
-    public virtual TDalEntity Update(TDalEntity entity)
+    public virtual TDalEntity Update(TDalEntity entity, TKey? userId = default)
     {
         TDomainEntity domainEntity = Mapper.Map(entity)!;
         domainEntity.UpdatedAt = DateTime.Now.ToUniversalTime();

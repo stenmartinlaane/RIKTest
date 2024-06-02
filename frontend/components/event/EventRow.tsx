@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useContext } from "react";
 import Event from "../../entities/Event";
-import formatDate from "@/app/utils/dateFormater";
+import formatDate from "@/utils/dateFormater";
 import { AppContext } from "../../context/StateComponent";
 import { toast } from "react-toastify";
 
@@ -24,6 +24,7 @@ const EventRow = ({ event, index }: { event: Event; index: number }) => {
         `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event/${event.id}`,
         {
           method: "DELETE",
+          credentials: 'include'
         }
       );
 

@@ -11,10 +11,14 @@ public class EventService :
     BaseEntityService<App.DAL.DTO.Event, App.BLL.DTO.Event, IEventRepository>,
     IEventService
 {
+    private readonly IAppUnitOfWork _uow;
+    
     public EventService(IAppUnitOfWork uoW, IEventRepository repository, IMapper mapper) : base(uoW,
         repository, new BllDalMapper<App.DAL.DTO.Event, App.BLL.DTO.Event>(mapper))
     {
-        
+        _uow = uoW;
     }
+
+
     
 }

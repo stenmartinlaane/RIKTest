@@ -1,25 +1,32 @@
 using System.Net;
+using System.Security.Claims;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
+using App.DTO.v1_0;
+using App.DAL.EF;
+using Asp.Versioning;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using App.DAL.EF;
-using App.DAL.DTO;
-using Asp.Versioning;
+using WebApp.Helpers;
 
-namespace WebApp.Controllers
+namespace WebApp.ApiControllers
 {
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class EventController : ControllerBase
     {
-        private readonly IAppUnitOfWork _uow;
+        private readonly IAppBLL _bll;
         private readonly AppDbContext _context;
+        private readonly PublicDTOBllMapper<App.DTO.v1_0.Event, App.BLL.DTO.Event> _mapper;
 
-        public EventController(IAppUnitOfWork uow, AppDbContext context)
+        public EventController(IAppBLL bll, AppDbContext context, IMapper autoMapper)
         {
-            _uow = uow;
+            _bll = bll;
             _context = context;
+            _mapper = new PublicDTOBllMapper<App.DTO.v1_0.Event, App.BLL.DTO.Event>(autoMapper);
         }
 
         // GET: api/Event
@@ -29,7 +36,7 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<IEnumerable<Event>>> GetAccounts()
         {
-            var res = await _uow.Event.GetAllAsync();
+            var res = await _bll.Events.GetAllAsync(User.GetUserId());
             return Ok(res);
         }
 
@@ -41,18 +48,19 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<Event>> GetEvent(Guid id)
         {
-            var @event = await _uow.Event.FirstOrDefaultAsync(id);
+            var @event = await _bll.Events.FirstOrDefaultAsync(id, User.GetUserId());
 
             if (@event == null)
             {
                 return NotFound();
             }
 
-            return @event;
+            return _mapper.Map(@event);
         }
 
         // PUT: api/Event/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Policy = "id_policy")]
         [HttpPut("{id}")]
         [ProducesResponseType((int) HttpStatusCode.NoContent)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
@@ -89,18 +97,15 @@ namespace WebApp.Controllers
 
         // POST: api/Event
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Policy = "id_policy")]
         [HttpPost]
         [ProducesResponseType<Event>((int) HttpStatusCode.Created)]
         [Produces("application/json")]
         [Consumes("application/json")]
         public async Task<ActionResult<Event>> PostEvent(Event @event)
         {
-            Console.WriteLine(@event.Name);
-            Console.WriteLine(@event.Id);
-            
-            _uow.Event.Add(@event);
-            await _uow.SaveChangesAsync();
-
+            _bll.Events.Add(_mapper.Map(@event), User.GetUserId());
+            await _bll.SaveChangesAsync();
             return CreatedAtAction("GetEvent", new
             {
                 version = HttpContext.GetRequestedApiVersion()?.ToString(),
@@ -109,6 +114,7 @@ namespace WebApp.Controllers
         }
 
         // DELETE: api/Event/5
+        [Authorize(Policy = "id_policy")]
         [ProducesResponseType((int) HttpStatusCode.NoContent)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
         [HttpDelete("{id}")]
@@ -116,27 +122,27 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<IActionResult> DeleteEvent(Guid id)
         {
-            var @event = await _uow.Event.FirstOrDefaultAsync(id);
+            var @event = await _bll.Events.FirstOrDefaultAsync(id);
             if (@event == null)
             {
                 return NotFound();
             }
             
 
-            foreach (var pe in await _uow.ParticipantEvent.GetAllByEventId(@event.Id))
+            foreach (var pe in (await _bll.ParticipantEvents.GetAllByEventId(@event.Id, User.GetUserId()))!)
             {
-                await _uow.ParticipantEvent.RemoveAsync(pe);
+                await _bll.ParticipantEvents.RemoveAsync(pe);
             }
 
-            await _uow.Event.RemoveAsync(@event);
-            await _uow.SaveChangesAsync();
+            await _bll.Events.RemoveAsync(@event);
+            await _bll.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool EventExists(Guid id)
         {
-            return _uow.Event.Exists(id);
+            return _bll.Events.Exists(id, User.GetUserId());
         }
     }
 }

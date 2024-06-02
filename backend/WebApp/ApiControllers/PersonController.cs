@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using App.Contracts.DAL;
-using Microsoft.AspNetCore.Http;
+using App.DAL.DTO;
+using App.DAL.EF;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using App.DAL.EF;
-using App.DAL.DTO;
-using Asp.Versioning;
 
-namespace WebApp.Controllers
+namespace WebApp.ApiControllers
 {
     [ApiVersion("1.0")]
     [ApiController]

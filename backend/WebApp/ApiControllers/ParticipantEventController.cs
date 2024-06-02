@@ -1,30 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
-using Microsoft.AspNetCore.Http;
+using App.DTO.v1_0;
+using App.DAL.EF;
+using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using App.DAL.EF;
-using App.DAL.DTO;
-using Asp.Versioning;
+using WebApp.Helpers;
 
-namespace WebApp.Controllers
+namespace WebApp.ApiControllers
 {
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class ParticipantEventController : ControllerBase
     {
-        private readonly IAppUnitOfWork _uow;
+        private readonly IAppBLL _bll;
         private readonly AppDbContext _context;
+        private readonly PublicDTOBllMapper<App.DTO.v1_0.ParticipantEvent, App.BLL.DTO.ParticipantEvent> _mapper;
 
-        public ParticipantEventController(AppDbContext context, IAppUnitOfWork uow)
+        public ParticipantEventController(IAppBLL bll, AppDbContext context, IMapper autoMapper)
         {
+            _bll = bll;
             _context = context;
-            _uow = uow;
+            _mapper = new PublicDTOBllMapper<App.DTO.v1_0.ParticipantEvent, App.BLL.DTO.ParticipantEvent>(autoMapper);
         }
 
         // GET: api/ParticipantEvent
@@ -34,7 +34,7 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<IEnumerable<ParticipantEvent>>> ParticipantEvents()
         {
-            var res = await _uow.ParticipantEvent.GetAllAsync();
+            var res = await _bll.ParticipantEvents.GetAllAsync(User.GetUserId());
             return Ok(res);
         }
 
@@ -46,7 +46,7 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<ParticipantEvent>> GetParticipantEvent(Guid id)
         {
-            var participantEvent = await _uow.ParticipantEvent.FirstOrDefaultAsync(id);
+            var participantEvent = await _bll.ParticipantEvents.FirstOrDefaultAsync(id, User.GetUserId());
             
             Console.WriteLine("debughere");
             if (participantEvent!.Person == null)
@@ -64,7 +64,7 @@ namespace WebApp.Controllers
                 return NotFound();
             }
 
-            return participantEvent;
+            return _mapper.Map(participantEvent);
         }
 
         // PUT: api/ParticipantEvent/5
@@ -82,11 +82,11 @@ namespace WebApp.Controllers
                 return BadRequest();
             }
             
-            var updatedParticipantEvent = _uow.ParticipantEvent.Update(participantEvent);
+            var updatedParticipantEvent = _bll.ParticipantEvents.Update(_mapper.Map(participantEvent), User.GetUserId());
 
             try
             {
-                await _uow.SaveChangesAsync();
+                await _bll.SaveChangesAsync();
                 return CreatedAtAction("PutParticipantEvent", new
                 {
                     version = HttpContext.GetRequestedApiVersion()?.ToString(),
@@ -116,8 +116,8 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<ParticipantEvent>> PostParticipantEvent(ParticipantEvent participantEvent)
         {
-            var updatedParticipantEvent = _uow.ParticipantEvent.Add(participantEvent);
-            await _uow.SaveChangesAsync();
+            var updatedParticipantEvent = _bll.ParticipantEvents.AddParticipantToEventAsync(_mapper.Map(participantEvent), User.GetUserId());
+            await _bll.SaveChangesAsync();
 
             return CreatedAtAction("GetParticipantEvent", new
             {
@@ -134,21 +134,21 @@ namespace WebApp.Controllers
         [Consumes("application/json")]
         public async Task<IActionResult> DeleteParticipantEvent(Guid id)
         {
-            var participantEvent = await _uow.ParticipantEvent.FirstOrDefaultAsync(id);
+            var participantEvent = await _bll.ParticipantEvents.FirstOrDefaultAsync(id, User.GetUserId());
             if (participantEvent == null)
             {
                 return NotFound();
             }
 
-            await _uow.ParticipantEvent.RemoveAsync(participantEvent);
-            await _uow.SaveChangesAsync();
+            await _bll.ParticipantEvents.RemoveAsync(participantEvent, User.GetUserId());
+            await _bll.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool ParticipantEventExists(Guid id)
         {
-            return _uow.ParticipantEvent.Exists(id);
+            return _bll.ParticipantEvents.Exists(id, User.GetUserId());
         }
     }
 }

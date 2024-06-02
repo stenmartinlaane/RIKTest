@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using App.BLL;
 using App.Contracts.BLL;
@@ -8,12 +9,14 @@ using App.DAL.EF;
 using App.Domain.Identity;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApp;
+using WebApp.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,26 +39,57 @@ builder.Services
 
 // clear default claims
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+// builder.Services
+//     .AddAuthentication()
+//     .AddCookie(options => { options.SlidingExpiration = true; })
+//     .AddJwtBearer(options =>
+//     {
+//         options.RequireHttpsMetadata = false;
+//         options.SaveToken = false;
+//         options.TokenValidationParameters = new TokenValidationParameters()
+//         {
+//             ValidIssuer = builder.Configuration.GetValue<string>("JWT:issuer"),
+//             ValidAudience = builder.Configuration.GetValue<string>("JWT:audience"),
+//             IssuerSigningKey =
+//                 new SymmetricSecurityKey(
+//                     Encoding.UTF8.GetBytes(
+//                         builder.Configuration.GetValue<string>("JWT:issuer")
+//                     )
+//                 ),
+//             ClockSkew = TimeSpan.Zero,
+//         };
+//     });
+
+// builder.Services.AddDataProtection()
+//     .ProtectKeysWithCertificate("thumbprint");
+
 builder.Services
-    .AddAuthentication()
-    .AddCookie(options => { options.SlidingExpiration = true; })
-    .AddJwtBearer(options =>
+    .AddAuthentication(o =>
     {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = false;
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidIssuer = builder.Configuration.GetValue<string>("JWT:issuer"),
-            ValidAudience = builder.Configuration.GetValue<string>("JWT:audience"),
-            IssuerSigningKey =
-                new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(
-                        builder.Configuration.GetValue<string>("JWT:issuer")
-                    )
-                ),
-            ClockSkew = TimeSpan.Zero,
-        };
+        o.DefaultScheme = "MyCookieScheme";
+        o.DefaultAuthenticateScheme = "MyCookieScheme";
+    })
+    .AddCookie("MyCookieScheme",  o =>
+    {
+        o.Cookie.Name = "jwt";
+        o.Cookie.HttpOnly = true;
+        o.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        o.Cookie.SameSite = SameSiteMode.Strict;
+        //o.Cookie.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+        o.Cookie.IsEssential = true;
+        o.Cookie.Path = "/";
     });
+
+builder.Services.AddAuthorization(
+    b =>
+    {
+        b.AddPolicy("id_policy", pb => pb
+            .RequireAuthenticatedUser()
+            .AddAuthenticationSchemes("MyCookieScheme")
+            .RequireClaim(ClaimTypes.NameIdentifier)
+        );
+    }
+    );
 
 builder.Services.AddAutoMapper(
     typeof(App.DAL.EF.AutoMapperProfile),
@@ -81,12 +115,12 @@ apiVersioningBuilder.AddApiExplorer(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsAllowAll", policy =>
-    {
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-        policy.AllowAnyOrigin();
-    });
+   options.AddPolicy("AllowSpecificOrigin",
+       policy => { policy.WithOrigins("http://localhost:3000")
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowCredentials(); // Allow credentials (cookies)
+            });
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -118,15 +152,20 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// app.UseCors("CorsAllowAll");
+app.UseCors("AllowSpecificOrigin");
+
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-app.UseCors("CorsAllowAll");
+
 
 app.UseRequestLocalization(options:
     app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value!
 );
-
-app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -150,7 +189,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"); //.RequireAuthorization("cookie");
 
 app.Run();
 

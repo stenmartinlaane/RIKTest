@@ -1,12 +1,15 @@
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using App.DAL.EF;
 using App.Domain.Identity;
 using Asp.Versioning;
 using Helpers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using WebApp.DTO;
 
 namespace WebApp.ApiControllers.Identity;
@@ -21,6 +24,7 @@ public class AccountController : ControllerBase
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _context;
+    private Random Random = new Random();
 
     public AccountController(UserManager<AppUser> userManager, ILogger<AccountController> logger,
         SignInManager<AppUser> signInManager, IConfiguration configuration, AppDbContext context)
@@ -33,14 +37,14 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<JWTResponse>> Login([FromBody] LoginInfo loginInfo)
+    public async Task<ActionResult> Login([FromBody] LoginInfo loginInfo)
     {
         // verify user
         var appUser = await _userManager.FindByEmailAsync(loginInfo.Email);
         if (appUser == null)
         {
             _logger.LogWarning("WebApi login failed, email {} not found", loginInfo.Email);
-            // TODO: random delay 
+            await Task.Delay(Random.Next(1, 101));
             return NotFound("User/Password problem");
         }
 
@@ -50,15 +54,7 @@ public class AccountController : ControllerBase
         {
             _logger.LogWarning("WebApi login failed, password {} for email {} was wrong", loginInfo.Password,
                 loginInfo.Email);
-            // TODO: random delay 
-            return NotFound("User/Password problem");
-        }
-
-        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(appUser);
-        if (claimsPrincipal == null)
-        {
-            _logger.LogWarning("WebApi login failed, claimsPrincipal null");
-            // TODO: random delay 
+            await Task.Delay(Random.Next(1, 101));
             return NotFound("User/Password problem");
         }
 
@@ -73,63 +69,135 @@ public class AccountController : ControllerBase
         };
         _context.RefreshTokens.Add(refreshToken);
         await _context.SaveChangesAsync();
-
-        var jwt = IdentityHelpers.GenerateJwt(
-            claimsPrincipal.Claims,
-            _configuration.GetValue<string>("JWT:key"),
-            _configuration.GetValue<string>("JWT:issuer"),
-            _configuration.GetValue<string>("JWT:audience"),
-            60 //*60*24
-        );
-
-        var responseData = new JWTResponse()
+        
+        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(appUser);
+        new ClaimsPrincipal(new ClaimsIdentity(claimsPrincipal.Claims, "MyCookieScheme"));
+        
+        Console.WriteLine("claims values here");
+        foreach (var claim in claimsPrincipal.Claims)
         {
-            Jwt = jwt,
-            RefreshToken = refreshToken.RefreshToken
-        };
+            Console.WriteLine(claim);
+        }
 
-        return Ok(responseData);
+        await HttpContext.SignInAsync("MyCookieScheme", claimsPrincipal,
+            new AuthenticationProperties()
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(1000),
+            }
+        );
+        
+        Response.Cookies.Append("refreshToken", refreshToken.RefreshToken, new CookieOptions
+        {
+            Secure = false,
+            HttpOnly = true,
+            SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(90),
+            IsEssential = true,
+            Path = "/api/v1/identity/Account/"
+        });
+        
+        Response.Cookies.Append("refreshTokenTimer", "", new CookieOptions
+        {
+            Secure = false,
+            HttpOnly = false,
+            SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(90),
+            IsEssential = true,
+            Path = "/api/v1/identity/Account/"
+        });
+
+        // Response.Headers.Append("Access-Control-Allow-Origin", HttpContext.Request.Host.Host);
+
+        return Ok();
     }
 
     [HttpPost]
-    public async Task<ActionResult<JWTResponse>> RefreshTokenData(
-        [FromBody]
-        TokenRefreshInfo tokenRefreshInfo
-    )
+    public async Task<ActionResult> RefreshJwt()
     {
-        // extract jwt object
-        JwtSecurityToken? jwt;
-        try
-        {
-            jwt = new JwtSecurityTokenHandler().ReadJwtToken(tokenRefreshInfo.Jwt);
-            if (jwt == null)
-            {
-                return BadRequest("No token");
-            }
-        }
-        catch (Exception e)
-        {
-            return BadRequest("No token");
-        }
-
-        // validate jwt, ignore expiration date
-
-        var isValidJwt = IdentityHelpers.ValidateJWT(
-            tokenRefreshInfo.Jwt,
-            _configuration.GetValue<string>("JWT:key"),
-            _configuration.GetValue<string>("JWT:issuer"),
-            _configuration.GetValue<string>("JWT:audience")
-        );
-
-        // extract userid or username from jwt
-
         // validate refresh token
+        var cookierefreshToken = Request.Cookies
+            .Where(c => c.Key == "refreshToken")
+            .Select(c => c.Value)
+            .FirstOrDefault();
+
+        var refreshToken = _context.RefreshTokens.FirstOrDefault(token => token.RefreshToken == cookierefreshToken);
+        if (refreshToken == null)
+        {
+            return BadRequest("Invalid refreshtoken");
+        }
+        
         // get user
-        // generate jwt
-        // mark refresh token in db as expired, generate new values
-        // return data
+        var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(refreshToken.AppUser);
+        
+
+        // genereate jwt
+        await HttpContext.SignInAsync("MyCookieScheme", claimsPrincipal,
+            new AuthenticationProperties()
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+            }
+        );
+        
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> LogOut()
+    {
+        
+        foreach (Claim claim in HttpContext.User.Claims)
+        {
+            Console.WriteLine(claim.Value);
+        }
+        
+        Console.WriteLine("here345");
+
+        await HttpContext.SignOutAsync("MyCookieScheme",
+            new AuthenticationProperties()
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(90)
+            }
+        );
+        
+        var refreshToken = Request.Cookies
+            .Where(c => c.Key == "refreshToken")
+            .Select(c => c.Value)
+            .FirstOrDefault();
+        if (refreshToken == null)
+        {
+            return BadRequest();
+        }
+        
+        var deletedRows = await _context.RefreshTokens
+            .Where(t => t.RefreshToken == refreshToken)
+            .ExecuteDeleteAsync();
+        _logger.LogInformation("Deleted {} refresh tokens", deletedRows);
 
 
+        
+        Response.Cookies.Append("refreshToken", "", new CookieOptions
+        {
+            Secure = false,
+            HttpOnly = true,
+            SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(-1),
+            IsEssential = true,
+            Path = "/api/v1/identity/Account/"
+        });
+        
+        Response.Cookies.Append("refreshTokenTimer", "", new CookieOptions
+        {
+            Secure = false,
+            HttpOnly = false,
+            SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddDays(-1),
+            IsEssential = true,
+            Path = "/api/v1/identity/Account/"
+        });
+        
         return Ok();
     }
 }

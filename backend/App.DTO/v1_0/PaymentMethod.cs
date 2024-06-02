@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using Base.DTO;
 
 
 namespace App.DTO.v1_0;
 
-public class PaymentMethod
+public class PaymentMethod: BaseEntity
 {
     [MaxLength(256)]
     public string MethodName { get; set; } = default!;

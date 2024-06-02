@@ -1,12 +1,12 @@
 using System.Net;
 using App.Contracts.DAL;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using App.DAL.DTO;
 using App.DAL.EF;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace WebApp.Controllers
+namespace WebApp.ApiControllers
 {
     [ApiVersion("1.0")]
     [ApiController]

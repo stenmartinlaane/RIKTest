@@ -56,6 +56,7 @@ const PersonDetail = ({participantEvent}: {participantEvent: ParticipantEvent}) 
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
+          credentials: 'include',
         }
       );
       console.log(res.status)

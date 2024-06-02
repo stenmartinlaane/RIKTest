@@ -11,8 +11,8 @@ public interface IEntityRepository<TEntity, TKey>
     where TEntity : class, IDomainEntityId<TKey>
     where TKey : IEquatable<TKey>
 {
-    TEntity Add(TEntity entity);
-    TEntity Update(TEntity entity);
+    TEntity Add(TEntity entity, TKey? userId = default);
+    TEntity Update(TEntity entity, TKey? userId = default);
     int Remove(TEntity entity, TKey? userId = default);
     int Remove(TKey id, TKey? userId = default);
 

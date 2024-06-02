@@ -56,17 +56,34 @@ const AddPersonForm = ({ id }: { id: string }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
+          credentials: 'include',
         }
       );
       console.log(res.status)
       if (res.status === 201) {
         let participantEvent = await res.json(); 
+        console.log(await participantEvent as ParticipantEvent)
         setEvent(prevEvent => {
           const updatedEvent = { ...prevEvent };
-          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent as ParticipantEvent];
+          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent.result as ParticipantEvent];
           return updatedEvent;
         });
+        // setEvent(prevEvent => {
+        //   const updatedParticipantEvents = [...prevEvent.participantEvents];
+        //   updatedParticipantEvents.push(participantEvent);
+          
+        //   return {
+        //     ...prevEvent,
+        //     participantEvents: updatedParticipantEvents
+        //   };
+        // });
+        
+        // setEvent(new Event)
         toast.success("Eraisik üritusele lisatud.")
+        console.log("event:")
+        console.log(event)
+        console.log("participantevent:")
+        console.log(participantEvent)
 
         
       } else if (res.status === 400 || res.status === 401) {

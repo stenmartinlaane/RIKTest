@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "../LogoutButton";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -32,7 +33,8 @@ export default function NavBar() {
               ÜRITUSE LISAMINE
             </Link>
             <div className="px-8 py-1 ml-auto">
-              <img src="/images/symbol.svg"></img>
+              <LogoutButton></LogoutButton>
+              {/* <img src="/images/symbol.svg"></img> */}
             </div>
           </ul>
         </nav>

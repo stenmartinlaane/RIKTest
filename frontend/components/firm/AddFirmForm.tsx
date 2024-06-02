@@ -50,13 +50,14 @@ const AddFirmForm = ({ id }: { id: string }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
+          credentials: 'include',
         }
       );
       if (res.status === 201) {
         let participantEvent = await res.json(); 
         setEvent(prevEvent => {
           const updatedEvent = { ...prevEvent };
-          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent as ParticipantEvent];
+          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent.result as ParticipantEvent];
           return updatedEvent;
         });
         toast.success("Ettevõte üritusele lisatud.")

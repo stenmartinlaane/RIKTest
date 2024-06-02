@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Base.DTO;
 
 namespace App.DTO.v1_0;
 
-public class Event
+public class Event: BaseEntity
 {
     public DateTime StartTime { get; set; }
     

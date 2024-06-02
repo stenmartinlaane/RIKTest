@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Event from "@/entities/Event";
 import { useRouter } from "next/navigation";
-import { convertToISO8601 } from "@/app/utils/dateFormater";
+import { convertToISO8601 } from "@/utils/dateFormater";
 import { toast } from "react-toastify";
 import Link from "next/link";
 
@@ -32,6 +32,7 @@ function AddEventForm() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
+          credentials: 'include',
         }
       );
       if (res.status === 201) {

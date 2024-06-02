@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Base.DTO;
 
 namespace App.DTO.v1_0;
 
-public class ParticipantEvent
+public class ParticipantEvent: BaseEntity
 {
     public DateTime RegisterDateTime { get; set; }
 

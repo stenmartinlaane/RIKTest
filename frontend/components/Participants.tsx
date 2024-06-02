@@ -19,7 +19,7 @@ import {
 import { useParams } from "next/navigation";
 import Event from "@/entities/Event";
 import Spinner from "./Spinner";
-import formatDate from "@/app/utils/dateFormater";
+import formatDate from "@/utils/dateFormater";
 import ParticipantEvent from "@/entities/ParticipantEvent";
 import ParticipantRow from "./ParticipantRow";
 import AddPersonForm from "./person/AddPersonForm";
@@ -36,11 +36,8 @@ const Participants = () => {
   useEffect(() => {
     const fetchEvent = async (): Promise<Event | null> => {
       try {
-        console.log(
-          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event/${id}`
-        );
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event/${id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event/${id}`, {credentials: 'include'}
         );
 
         if (res.status === 200) {
