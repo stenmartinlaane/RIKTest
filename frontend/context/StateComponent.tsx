@@ -5,6 +5,7 @@ import { createContext } from "react";
 import Event from "@/entities/Event";
 import PaymentMethod from "@/entities/PaymentMethod";
 import { EventProvider } from "./EventContext";
+import LoginResponse from "@/entities/LoginResponse";
 
 export default function StateComponent({
   children,
@@ -14,6 +15,7 @@ export default function StateComponent({
   const [events, setEvents] = useState(Array<Event>);
   const [paymentMethods, setPaymentMethods] = useState(Array<PaymentMethod>);
   const [userInfo, setUserInfo] = useState<IUserInfo | null>(null);
+  const [jwtCookieExpireTimeInMinutes, setJwtCookieExpireTimeInMinutes] = useState(5);
 
   useEffect(() => {
     const fetchPaymentMethods = async () => {
@@ -33,6 +35,32 @@ export default function StateComponent({
 
     fetchPaymentMethods();
   }, []);
+
+  const fetchJwtCookie = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1/identity/Account/RefreshJwt`, {
+        method: 'GET',
+        headers: {
+          "Accept": "application/json",
+        },
+        credentials: 'include',
+      });
+      if (response.ok) {
+        let loginResponse = await response.json()
+        setJwtCookieExpireTimeInMinutes(Number(loginResponse.jwtCookieExpireTimeInMinutes));
+      } else {
+        console.error('Failed to fetch JWT token');
+      }
+    } catch (error) {
+      console.error('Error fetching JWT token:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJwtCookie();
+    const intervalId = setInterval(fetchJwtCookie, jwtCookieExpireTimeInMinutes * 60 * 1000 - 30 * 1000);
+    return () => clearInterval(intervalId);
+  }, [jwtCookieExpireTimeInMinutes])
 
   return (
     <AppContext.Provider

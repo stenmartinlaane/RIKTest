@@ -14,7 +14,7 @@ export default function NavBar() {
         <nav className="h-full w-full flex flex-1">
           <ul className="list-style-none flex ps-0 flex-row h-full w-full">
             <Link href="/" className="w-1/5 flex items-center pl-6">
-              <img src="/images/logo.svg"></img>
+              <img className="w-24" src="/images/logo.svg"></img>
             </Link>
             <Link
               href="/"

@@ -1,10 +1,13 @@
 using System.Net;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
-using App.DAL.DTO;
+using App.DTO.v1_0;
 using App.DAL.EF;
 using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApp.Helpers;
 
 namespace WebApp.ApiControllers
 {
@@ -13,13 +16,15 @@ namespace WebApp.ApiControllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class PersonController : ControllerBase
     {
-        private readonly IAppUnitOfWork _uow;
+        private readonly IAppBLL _bll;
         private readonly AppDbContext _context;
+        private readonly PublicDTOBllMapper<App.DTO.v1_0.Person, App.BLL.DTO.Person> _mapper;
 
-        public PersonController(AppDbContext context, IAppUnitOfWork uow)
+        public PersonController(IAppBLL bll, AppDbContext context, IAppUnitOfWork uow, IMapper autoMapper)
         {
+            _bll = bll;
             _context = context;
-            _uow = uow;
+            _mapper = new PublicDTOBllMapper<App.DTO.v1_0.Person, App.BLL.DTO.Person>(autoMapper);
         }
 
         // GET: api/Person
@@ -29,7 +34,7 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<IEnumerable<Person>>> GetGames()
         {
-            var res = await _uow.Event.GetAllAsync();
+            var res = await _bll.Events.GetAllAsync();
             return Ok(res);
         }
 
@@ -41,14 +46,14 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<Person>> GetPerson(Guid id)
         {
-            var person = await _uow.Person.FirstOrDefaultAsync(id);
+            var person = await _bll.Persons.FirstOrDefaultAsync(id);
 
             if (person == null)
             {
                 return NotFound();
             }
 
-            return person;
+            return _mapper.Map(person);
         }
 
         // PUT: api/Person/5
@@ -95,8 +100,8 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<Person>> PostPerson(Person person)
         {
-            _uow.Person.Add(person);
-            await _uow.SaveChangesAsync();
+            _bll.Persons.Add(_mapper.Map(person));
+            await _bll.SaveChangesAsync();
 
             return CreatedAtAction("GetPerson", new
             {
@@ -113,21 +118,21 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<IActionResult> DeletePerson(Guid id)
         {
-            var person = await _uow.Person.FirstOrDefaultAsync(id);
+            var person = await _bll.Persons.FirstOrDefaultAsync(id);
             if (person == null)
             {
                 return NotFound();
             }
 
-            await _uow.Person.RemoveAsync(person);
-            await _uow.SaveChangesAsync();
+            await _bll.Persons.RemoveAsync(person);
+            await _bll.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool PersonExists(Guid id)
         {
-            return _uow.Person.Exists(id);
+            return _bll.Persons.Exists(id);
         }
     }
 }

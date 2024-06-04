@@ -9,18 +9,18 @@ import { AppContext } from '@/context/StateComponent';
 
 interface Values {
   email: string;
-  password: '';
+  password: string;
 }
 const LoginForm = () => {
     const { userInfo, setUserInfo } = useContext(AppContext);
     const router = useRouter();
 
     useEffect(() => {
-        if (doesCookieExist("jwtTimer")) {
+        if (doesCookieExist("refreshTokenTimer")) {
             console.log("here")
             router.push("/");
         }
-      }, [userInfo]);
+      }, []);
 
     const login = async (email: string, password: string) => {
         const res = await AccountService.login(email, password)
@@ -36,8 +36,8 @@ const LoginForm = () => {
     }
 
   return (
-    <div>
-      <h1>Signup</h1>
+    <div  className="w-4/5 h-auto p-8">
+      <h2>Sisse logimine</h2>
       <Formik
         initialValues={{
           email: '',
@@ -48,34 +48,44 @@ const LoginForm = () => {
           { setSubmitting }: FormikHelpers<Values>
         ) => {
             login(values.email, values.password)
-            // const res = await AccountService.login(values.email, values.password)
-            // if (await res.status > 300) {
-            //     setUserInfo({
-            //         email: values.email,
-            //         jwt: res.jwt,
-            //         refreshToken: res.refreshToken
-            //     })
-            // }
-            // console.log(await res.status)
         }}
       >
         <Form>
-          <label htmlFor="password">Password</label>
-          <Field suggested="current-password" type="password" id="password" name="password" placeholder="" />
+        <div className="w-100 flex my-3">
+          <div className="w-1/4">
+            <label htmlFor="email">Email</label>
+          </div>
+          <div className="w-2/4">
+            <Field
+            className="w-full border border-black rounded px-2"
+              id="email"
+              name="email"
+              placeholder="john@acme.com"
+              type="email"
+            />
+          </div>
+        </div>
 
-          <label htmlFor="email">Email</label>
-          <Field
-            id="email"
-            name="email"
-            placeholder="john@acme.com"
-            type="email"
-          />
-
-          <button type="submit">Submit</button>
+        <div className="w-100 flex my-3">
+          <div className="w-1/4">
+            <label htmlFor="password">Password</label>
+          </div>
+          <div className="w-2/4">
+            <Field className="w-full border border-black rounded px-2" suggested="current-password" type="password" id="password" name="password" placeholder="" />
+          </div>
+        </div>
+          
+          
+          <div className="bg-primary p-2 rounded w-1/6">
+            <button className='text-white' type="submit">Sisene</button>
+          </div>
         </Form>
       </Formik>
       {/* <GoogleLoginButton></GoogleLoginButton> */}
-      <button onClick={() => login("admin@eesti.ee", "Kala.maja1")}>Login easy</button>
+      <button onClick={() => login("admin@eesti.ee", "Kala.maja1")}>quicklogin</button>
+      <div className="bg-primary p-2 rounded w-1/6">
+        <button className='text-white' onClick={() => router.push("registerUser")}>Registreeru</button>
+      </div>
     </div>
   )
 }

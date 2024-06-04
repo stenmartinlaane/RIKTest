@@ -18,7 +18,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <GoogleOAuthProvider clientId="254614854717-n391mjd53sdld5d9vckp1n325nhl71eu.apps.googleusercontent.com">
       <html lang="en">
         <body>
           <div className="bg-black w-full h-screen border-full flex flex-col">
@@ -33,6 +32,5 @@ export default function RootLayout({
           <ToastContainer />
         </body>
       </html>
-    </GoogleOAuthProvider>
   );
 }

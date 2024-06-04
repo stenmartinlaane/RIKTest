@@ -39,29 +39,6 @@ builder.Services
 
 // clear default claims
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-// builder.Services
-//     .AddAuthentication()
-//     .AddCookie(options => { options.SlidingExpiration = true; })
-//     .AddJwtBearer(options =>
-//     {
-//         options.RequireHttpsMetadata = false;
-//         options.SaveToken = false;
-//         options.TokenValidationParameters = new TokenValidationParameters()
-//         {
-//             ValidIssuer = builder.Configuration.GetValue<string>("JWT:issuer"),
-//             ValidAudience = builder.Configuration.GetValue<string>("JWT:audience"),
-//             IssuerSigningKey =
-//                 new SymmetricSecurityKey(
-//                     Encoding.UTF8.GetBytes(
-//                         builder.Configuration.GetValue<string>("JWT:issuer")
-//                     )
-//                 ),
-//             ClockSkew = TimeSpan.Zero,
-//         };
-//     });
-
-// builder.Services.AddDataProtection()
-//     .ProtectKeysWithCertificate("thumbprint");
 
 builder.Services
     .AddAuthentication(o =>
@@ -116,7 +93,7 @@ apiVersioningBuilder.AddApiExplorer(options =>
 builder.Services.AddCors(options =>
 {
    options.AddPolicy("AllowSpecificOrigin",
-       policy => { policy.WithOrigins("http://localhost:3000")
+       policy => { policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedFrontendDomain"))
            .AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials(); // Allow credentials (cookies)

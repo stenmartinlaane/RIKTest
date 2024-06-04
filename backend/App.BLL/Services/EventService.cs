@@ -4,6 +4,7 @@ using AutoMapper;
 using Base.BLL;
 using App.BLL.DTO;
 using App.Contracts.DAL.Repositories;
+using Event = App.DAL.DTO.Event;
 
 namespace App.BLL.Services;
 
@@ -18,7 +19,5 @@ public class EventService :
     {
         _uow = uoW;
     }
-
-
     
 }

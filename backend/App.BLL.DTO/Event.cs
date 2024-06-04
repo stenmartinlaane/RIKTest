@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using App.Domain.Identity;
 using Base.Domain;
 
 namespace App.BLL.DTO;
 
 public class Event : BaseEntityId
 {
+    public Guid AppUserId { get; set; }
+    public AppUser? AppUser { get; set; }
     public DateTime StartTime { get; set; }
     
     [MaxLength(256)]

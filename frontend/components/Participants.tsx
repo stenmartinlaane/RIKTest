@@ -33,6 +33,18 @@ const Participants = () => {
   const { id } = useParams() as { id: string };
   const [participantType, setParticipantType] = useState("Person");
 
+  const copyToClipboard = async () => {
+    const linkToCopy = window.location.origin + "/register/" + id
+    
+    try {
+      await navigator.clipboard.writeText(linkToCopy);
+      //('Link copied to clipboard!');
+    } catch (err) {
+      //setCopySuccess('Failed to copy the link.');
+      console.error('Error copying text: ', err);
+    }
+  }
+
   useEffect(() => {
     const fetchEvent = async (): Promise<Event | null> => {
       try {
@@ -67,10 +79,7 @@ const Participants = () => {
 
   return (
     <EventContext.Provider value={{ event, setEvent }}>
-        <FacebookShareButton
-          url="https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine"
-          hashtag="testhasthag"
-        ><FacebookIcon size={40} round={true} /></FacebookShareButton>
+        
         
       <div className="w-4/5 h-auto p-8">
         {loading && <Spinner loading={loading} />}
@@ -106,6 +115,13 @@ const Participants = () => {
                   )
                 )}
               </div>
+            </div>
+            <FacebookShareButton
+                url="https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine"
+                hashtag="testhasthag"
+              ><FacebookIcon size={40} round={true} /></FacebookShareButton>
+            <div className="bg-primary p-2 rounded w-1/6">
+              <button onClick={copyToClipboard}>Copy Event Registry link</button>
             </div>
           </div>
         )}

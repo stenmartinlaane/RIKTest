@@ -1,4 +1,5 @@
-﻿using Base.Contracts.BLL;
+﻿using System.Reflection;
+using Base.Contracts.BLL;
 using Base.Contracts.DAL;
 using Base.Contracts.Domain;
 
@@ -71,11 +72,34 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey> : IEnt
 
     public async Task<TBllEntity?> FirstOrDefaultAsync(TKey id, TKey? userId = default, bool noTracking = true)
     {
-        return Mapper.Map(await Repository.FirstOrDefaultAsync(id, userId, noTracking));
+        var result = Mapper.Map(await Repository.FirstOrDefaultAsync(id, userId, noTracking));
+        Type type = typeof(TBllEntity);
+        PropertyInfo? propertyInfo = type.GetProperty("AppUserId");
+        if (propertyInfo != null && !EqualityComparer<TKey>.Default.Equals(userId, default(TKey)))
+        {
+            var appUserIdValue = propertyInfo.GetValue(result);
+            
+            if (appUserIdValue == null || !appUserIdValue.Equals(userId))
+            {
+                return null;
+            }
+        }
+
+        return result;
     }
 
     public async Task<IEnumerable<TBllEntity>> GetAllAsync(TKey? userId = default, bool noTracking = true)
     {
+        Type type = typeof(TBllEntity);
+        PropertyInfo? propertyInfo = type.GetProperty("AppUserId");
+        if (propertyInfo != null && !EqualityComparer<TKey>.Default.Equals(userId, default(TKey)))
+        {
+            var res = (await Repository.GetAllAsync(userId, noTracking))
+                .Where(e => ((dynamic)e).AppUserId == userId)
+                .Select(e => Mapper.Map(e));
+            return res;
+
+        }
         return (await Repository.GetAllAsync(userId, noTracking)).Select(e => Mapper.Map(e));
     }
 

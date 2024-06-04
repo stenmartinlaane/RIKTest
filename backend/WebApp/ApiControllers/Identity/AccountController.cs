@@ -1,8 +1,10 @@
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using App.DAL.EF;
 using App.Domain.Identity;
+using App.DTO.v1_0.Identity;
 using Asp.Versioning;
 using Helpers;
 using Microsoft.AspNetCore.Authentication;
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
-using WebApp.DTO;
+using LoginInfo = WebApp.DTO.LoginInfo;
 
 namespace WebApp.ApiControllers.Identity;
 
@@ -25,6 +27,7 @@ public class AccountController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _context;
     private Random Random = new Random();
+    private readonly int JwtCookieExpireTimeInMinutes = 1;
 
     public AccountController(UserManager<AppUser> userManager, ILogger<AccountController> logger,
         SignInManager<AppUser> signInManager, IConfiguration configuration, AppDbContext context)
@@ -37,6 +40,8 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType<LoginResponse>((int) HttpStatusCode.OK)]
+    [Produces("application/json")]
     public async Task<ActionResult> Login([FromBody] LoginInfo loginInfo)
     {
         // verify user
@@ -67,23 +72,24 @@ public class AccountController : ControllerBase
         {
             AppUserId = appUser.Id
         };
+        refreshToken.AppUser = appUser;
         _context.RefreshTokens.Add(refreshToken);
         await _context.SaveChangesAsync();
         
         var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(appUser);
-        new ClaimsPrincipal(new ClaimsIdentity(claimsPrincipal.Claims, "MyCookieScheme"));
-        
-        Console.WriteLine("claims values here");
-        foreach (var claim in claimsPrincipal.Claims)
-        {
-            Console.WriteLine(claim);
-        }
+        // new ClaimsPrincipal(new ClaimsIdentity(claimsPrincipal.Claims, "MyCookieScheme"));
+        //
+        // Console.WriteLine("claims values here");
+        // foreach (var claim in claimsPrincipal.Claims)
+        // {
+        //     Console.WriteLine(claim);
+        // }
 
         await HttpContext.SignInAsync("MyCookieScheme", claimsPrincipal,
             new AuthenticationProperties()
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(1000),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(JwtCookieExpireTimeInMinutes),
             }
         );
         
@@ -107,12 +113,12 @@ public class AccountController : ControllerBase
             Path = "/api/v1/identity/Account/"
         });
 
-        // Response.Headers.Append("Access-Control-Allow-Origin", HttpContext.Request.Host.Host);
-
-        return Ok();
+        return Ok(new LoginResponse() { JwtCookieExpireTimeInMinutes = JwtCookieExpireTimeInMinutes });
     }
 
-    [HttpPost]
+    [HttpGet]
+    [ProducesResponseType<LoginResponse>((int) HttpStatusCode.OK)]
+    [Produces("application/json")]
     public async Task<ActionResult> RefreshJwt()
     {
         // validate refresh token
@@ -120,8 +126,9 @@ public class AccountController : ControllerBase
             .Where(c => c.Key == "refreshToken")
             .Select(c => c.Value)
             .FirstOrDefault();
-
-        var refreshToken = _context.RefreshTokens.FirstOrDefault(token => token.RefreshToken == cookierefreshToken);
+        
+        
+        var refreshToken = _context.RefreshTokens.AsQueryable().Include(rt => rt.AppUser).FirstOrDefault(token => token.RefreshToken == cookierefreshToken);
         if (refreshToken == null)
         {
             return BadRequest("Invalid refreshtoken");
@@ -136,9 +143,26 @@ public class AccountController : ControllerBase
             new AuthenticationProperties()
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(JwtCookieExpireTimeInMinutes),
             }
         );
+        
+        return Ok(new LoginResponse() { JwtCookieExpireTimeInMinutes = JwtCookieExpireTimeInMinutes });
+    }
+
+    [HttpPost]
+    [ProducesResponseType<LoginResponse>((int) HttpStatusCode.OK)]
+    [Produces("application/json")]
+    public async Task<ActionResult> Register([FromBody] RegisterInfo registerInfo)
+    {
+        var user = new AppUser()
+        {
+            Email = registerInfo.Email,
+            UserName = registerInfo.Password,
+            FirstName = registerInfo.Firstname,
+            LastName = registerInfo.Lastname
+        };
+        var res = _userManager.CreateAsync(user, registerInfo.Password).Result;
         
         return Ok();
     }
@@ -146,14 +170,6 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> LogOut()
     {
-        
-        foreach (Claim claim in HttpContext.User.Claims)
-        {
-            Console.WriteLine(claim.Value);
-        }
-        
-        Console.WriteLine("here345");
-
         await HttpContext.SignOutAsync("MyCookieScheme",
             new AuthenticationProperties()
             {

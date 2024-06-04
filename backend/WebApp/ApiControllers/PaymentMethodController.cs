@@ -1,10 +1,13 @@
 using System.Net;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
-using App.DAL.DTO;
+using App.DTO.v1_0;
 using App.DAL.EF;
 using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApp.Helpers;
 
 namespace WebApp.ApiControllers
 {
@@ -13,13 +16,15 @@ namespace WebApp.ApiControllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class PaymentMethodController : ControllerBase
     {
-        private readonly IAppUnitOfWork _uow;
+        private readonly IAppBLL _bll;
         private readonly AppDbContext _context;
+        private readonly PublicDTOBllMapper<App.DTO.v1_0.PaymentMethod, App.BLL.DTO.PaymentMethod> _mapper;
 
-        public PaymentMethodController(AppDbContext context, IAppUnitOfWork uow)
+        public PaymentMethodController(IAppBLL bll, AppDbContext context, IAppUnitOfWork uow, IMapper autoMapper)
         {
+            _bll = bll;
             _context = context;
-            _uow = uow;
+            _mapper = new PublicDTOBllMapper<App.DTO.v1_0.PaymentMethod, App.BLL.DTO.PaymentMethod>(autoMapper);
         }
 
         // GET: api/PaymentMethod
@@ -29,7 +34,7 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<IEnumerable<PaymentMethod>>> GetExerciseResults()
         {
-            var res = await _uow.PaymentMethod.GetAllAsync();
+            var res = await _bll.PaymentMethods.GetAllAsync();
             return Ok(res);
         }
 
@@ -41,14 +46,14 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<PaymentMethod>> GetPaymentMethod(Guid id)
         {
-            var paymentMethod = await _uow.PaymentMethod.FirstOrDefaultAsync(id);
+            var paymentMethod = await _bll.PaymentMethods.FirstOrDefaultAsync(id);
 
             if (paymentMethod == null)
             {
                 return NotFound();
             }
 
-            return paymentMethod;
+            return _mapper.Map(paymentMethod);
         }
 
         // PUT: api/PaymentMethod/5
@@ -95,8 +100,8 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<PaymentMethod>> PostPaymentMethod(PaymentMethod paymentMethod)
         {
-            _uow.PaymentMethod.Add(paymentMethod);
-            await _uow.SaveChangesAsync();
+            _bll.PaymentMethods.Add(_mapper.Map(paymentMethod));
+            await _bll.SaveChangesAsync();
 
             return CreatedAtAction("GetPaymentMethod", new
             {
@@ -113,21 +118,21 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<IActionResult> DeletePaymentMethod(Guid id)
         {
-            var paymentMethod = await _uow.PaymentMethod.FirstOrDefaultAsync(id);
+            var paymentMethod = await _bll.PaymentMethods.FirstOrDefaultAsync(id);
             if (paymentMethod == null)
             {
                 return NotFound();
             }
 
-            await _uow.PaymentMethod.RemoveAsync(paymentMethod);
-            await _uow.SaveChangesAsync();
+            await _bll.PaymentMethods.RemoveAsync(paymentMethod);
+            await _bll.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool PaymentMethodExists(Guid id)
         {
-            return _uow.PaymentMethod.Exists(id);
+            return _bll.PaymentMethods.Exists(id);
         }
     }
 }

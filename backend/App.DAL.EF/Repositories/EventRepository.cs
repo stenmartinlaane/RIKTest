@@ -34,4 +34,5 @@ public class EventRepository : BaseEntityRepository<App.Domain.Event, App.DAL.DT
             .Where(e => e.Id.Equals(id) && e.AppUserId == userId)
             .ExecuteDeleteAsync();
     }
+    
 }

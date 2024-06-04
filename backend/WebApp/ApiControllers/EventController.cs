@@ -34,7 +34,7 @@ namespace WebApp.ApiControllers
         [ProducesResponseType<IEnumerable<Event>>((int) HttpStatusCode.OK)]
         [Produces("application/json")]
         [Consumes("application/json")]
-        public async Task<ActionResult<IEnumerable<Event>>> GetAccounts()
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
             var res = await _bll.Events.GetAllAsync(User.GetUserId());
             return Ok(res);

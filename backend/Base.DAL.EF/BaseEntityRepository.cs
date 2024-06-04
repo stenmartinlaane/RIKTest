@@ -127,8 +127,8 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext>
 
     public virtual async Task<IEnumerable<TDalEntity>> GetAllAsync(TKey userId = default, bool noTracking = true)
     {
-        return (await CreateQuery(userId, noTracking).ToListAsync())
-            .Select(de => Mapper.Map(de));
+        var entities = await CreateQuery(userId, noTracking).ToListAsync();
+        return entities.Select(de => Mapper.Map(de));
     }
 
     public virtual async Task<bool> ExistsAsync(TKey id, TKey userId = default)

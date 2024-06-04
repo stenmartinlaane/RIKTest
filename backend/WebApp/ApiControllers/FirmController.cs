@@ -1,10 +1,13 @@
 using System.Net;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
-using App.DAL.DTO;
+using App.DTO.v1_0;
 using App.DAL.EF;
 using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApp.Helpers;
 
 namespace WebApp.ApiControllers
 {
@@ -13,13 +16,15 @@ namespace WebApp.ApiControllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class FirmController : ControllerBase
     {
-        private readonly IAppUnitOfWork _uow;
+        private readonly IAppBLL _bll;
         private readonly AppDbContext _context;
+        private readonly PublicDTOBllMapper<App.DTO.v1_0.Firm, App.BLL.DTO.Firm> _mapper;
 
-        public FirmController(AppDbContext context, IAppUnitOfWork uow)
+        public FirmController(IAppBLL bll, AppDbContext context, IAppUnitOfWork uow, IMapper autoMapper)
         {
+            _bll = bll;
             _context = context;
-            _uow = uow;
+            _mapper = new PublicDTOBllMapper<App.DTO.v1_0.Firm, App.BLL.DTO.Firm>(autoMapper);
         }
 
         // GET: api/Firm
@@ -29,7 +34,7 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<IEnumerable<Firm>>> GetExercises()
         {
-            var res = await _uow.Firm.GetAllAsync();
+            var res = await _bll.Firms.GetAllAsync();
             return Ok(res);
         }
 
@@ -41,14 +46,14 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<Firm>> GetFirm(Guid id)
         {
-            var firm = await _uow.Firm.FirstOrDefaultAsync(id);
+            var firm = await _bll.Firms.FirstOrDefaultAsync(id);
 
             if (firm == null)
             {
                 return NotFound();
             }
 
-            return firm;
+            return _mapper.Map(firm);
         }
 
         // PUT: api/Firm/5
@@ -95,8 +100,8 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<ActionResult<Firm>> PostFirm(Firm firm)
         {
-            _uow.Firm.Add(firm);
-            await _uow.SaveChangesAsync();
+            _bll.Firms.Add(_mapper.Map(firm));
+            await _bll.SaveChangesAsync();
 
             return CreatedAtAction("GetFirm", new
             {
@@ -113,21 +118,21 @@ namespace WebApp.ApiControllers
         [Consumes("application/json")]
         public async Task<IActionResult> DeleteFirm(Guid id)
         {
-            var firm = await _uow.Firm.FirstOrDefaultAsync(id);
+            var firm = await _bll.Firms.FirstOrDefaultAsync(id);
             if (firm == null)
             {
                 return NotFound();
             }
 
-            await _uow.Firm.RemoveAsync(firm);
-            await _uow.SaveChangesAsync();
+            await _bll.Firms.RemoveAsync(firm);
+            await _bll.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool FirmExists(Guid id)
         {
-            return _uow.Firm.Exists(id);
+            return _bll.Firms.Exists(id);
         }
     }
 }
