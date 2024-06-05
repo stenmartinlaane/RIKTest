@@ -32,6 +32,7 @@ namespace WebApp.ApiControllers
         // GET: api/Event
         [HttpGet]
         [ProducesResponseType<IEnumerable<Event>>((int) HttpStatusCode.OK)]
+        [Authorize(Policy = "id_policy")]
         [Produces("application/json")]
         [Consumes("application/json")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
@@ -44,6 +45,7 @@ namespace WebApp.ApiControllers
         [HttpGet("{id}")]
         [ProducesResponseType<Event>((int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [Authorize(Policy = "id_policy")]
         [Produces("application/json")]
         [Consumes("application/json")]
         public async Task<ActionResult<Event>> GetEvent(Guid id)
