@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const FirmFormInputs = () => {
-  return (
-    <div>FirmFormInputs</div>
-  )
-}
+  return <div>FirmFormInputs</div>;
+};
 
-export default FirmFormInputs
+export default FirmFormInputs;

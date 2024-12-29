@@ -15,7 +15,7 @@ const AddFirmForm = ({ id }: { id: string }) => {
   const pmId = paymentMethods.filter((pm) => pm.active)[0]?.id ?? "";
   const [paymentMethodId, setPaymentMethodId] = useState(pmId);
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const {event, setEvent} = useEventContext()!;
+  const { event, setEvent } = useEventContext()!;
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -50,24 +50,27 @@ const AddFirmForm = ({ id }: { id: string }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-          credentials: 'include',
+          credentials: "include",
         }
       );
       if (res.status === 201) {
-        let participantEvent = await res.json(); 
-        setEvent(prevEvent => {
+        let participantEvent = await res.json();
+        setEvent((prevEvent) => {
           const updatedEvent = { ...prevEvent };
-          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent.result as ParticipantEvent];
+          updatedEvent.participantEvents = [
+            ...updatedEvent.participantEvents,
+            participantEvent.result as ParticipantEvent,
+          ];
           return updatedEvent;
         });
-        toast.success("Ettevõte üritusele lisatud.")
+        toast.success("Ettevõte üritusele lisatud.");
       } else if (res.status === 400 || res.status === 401) {
         const dataObj = await res.json();
         console.log(dataObj);
-        toast.error("Tekkis viga ettevõte üritusele lisamisel.")
+        toast.error("Tekkis viga ettevõte üritusele lisamisel.");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
     }
   };

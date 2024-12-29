@@ -8,15 +8,27 @@ import { useRouter } from "next/navigation";
 import { useEventContext } from "@/context/EventContext";
 import Link from "next/link";
 
-const FirmDetail = ({participantEvent}: {participantEvent: ParticipantEvent}) => {
+const FirmDetail = ({
+  participantEvent,
+}: {
+  participantEvent: ParticipantEvent;
+}) => {
   const router = useRouter();
   const [name, setName] = useState(participantEvent.firm!.name);
-  const [registryCode, setregistryCode] = useState(participantEvent.firm!.registryCode);
-  const [participantCount, setparticipantCount] = useState(participantEvent.firm!.participantCount);
+  const [registryCode, setregistryCode] = useState(
+    participantEvent.firm!.registryCode
+  );
+  const [participantCount, setparticipantCount] = useState(
+    participantEvent.firm!.participantCount
+  );
   const { paymentMethods } = useContext(AppContext);
-  const [paymentMethodId, setPaymentMethodId] = useState(participantEvent.paymentMethodId);
-  const [additionalInfo, setAdditionalInfo] = useState(participantEvent.additionalNotes);
-  const {event, setEvent} = useEventContext()!;
+  const [paymentMethodId, setPaymentMethodId] = useState(
+    participantEvent.paymentMethodId
+  );
+  const [additionalInfo, setAdditionalInfo] = useState(
+    participantEvent.additionalNotes
+  );
+  const { event, setEvent } = useEventContext()!;
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -51,27 +63,33 @@ const FirmDetail = ({participantEvent}: {participantEvent: ParticipantEvent}) =>
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-          credentials: 'include',
+          credentials: "include",
         }
       );
-      console.log(res.status)
+      console.log(res.status);
       if (res.status === 201) {
-        let participantEvent = data; 
-        setEvent(prevEvent => {
+        let participantEvent = data;
+        setEvent((prevEvent) => {
           const updatedEvent = { ...prevEvent };
-          updatedEvent.participantEvents = updatedEvent.participantEvents.filter((pe) => pe.id !== participantEvent.id);
-          updatedEvent.participantEvents = [...updatedEvent.participantEvents, participantEvent as ParticipantEvent];
+          updatedEvent.participantEvents =
+            updatedEvent.participantEvents.filter(
+              (pe) => pe.id !== participantEvent.id
+            );
+          updatedEvent.participantEvents = [
+            ...updatedEvent.participantEvents,
+            participantEvent as ParticipantEvent,
+          ];
           return updatedEvent;
         });
-        toast.success("Firma andmed on uuendatud.")
+        toast.success("Firma andmed on uuendatud.");
         router.push("/osalejad/" + participantEvent.eventId);
       } else if (res.status === 400 || res.status === 401) {
         const dataObj = await res.json();
         console.log(dataObj);
-        toast.error("Tekkis viga eraisiku andmete uuendamisel.")
+        toast.error("Tekkis viga eraisiku andmete uuendamisel.");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
     }
   };
@@ -171,7 +189,9 @@ const FirmDetail = ({participantEvent}: {participantEvent: ParticipantEvent}) =>
             </div>
           </Link>
           <div className="bg-primary p-2 rounded">
-            <button type="submit" className='text-white'>Salvesta</button>
+            <button type="submit" className="text-white">
+              Salvesta
+            </button>
           </div>
         </div>
       </form>

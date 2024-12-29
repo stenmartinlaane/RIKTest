@@ -13,9 +13,10 @@ const HomePageContent = () => {
     const fetchEvents = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`,{
+          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event`,
+          {
             method: "GET",
-            credentials: 'include',
+            credentials: "include",
           }
         );
 

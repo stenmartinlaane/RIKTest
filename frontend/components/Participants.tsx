@@ -15,7 +15,7 @@ import {
   TwitterIcon,
   WhatsappIcon,
   EmailIcon,
-} from 'react-share';
+} from "react-share";
 import { useParams } from "next/navigation";
 import Event from "@/entities/Event";
 import Spinner from "./Spinner";
@@ -28,28 +28,29 @@ import { useEventContext } from "@/context/EventContext";
 
 const Participants = () => {
   const [loading, setLoading] = useState(true);
-  const {event, setEvent} = useEventContext()!;
+  const { event, setEvent } = useEventContext()!;
 
   const { id } = useParams() as { id: string };
   const [participantType, setParticipantType] = useState("Person");
 
   const copyToClipboard = async () => {
-    const linkToCopy = window.location.origin + "/register/" + id
-    
+    const linkToCopy = window.location.origin + "/register/" + id;
+
     try {
       await navigator.clipboard.writeText(linkToCopy);
       //('Link copied to clipboard!');
     } catch (err) {
       //setCopySuccess('Failed to copy the link.');
-      console.error('Error copying text: ', err);
+      console.error("Error copying text: ", err);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchEvent = async (): Promise<Event | null> => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event/${id}`, {credentials: 'include'}
+          `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/Event/${id}`,
+          { credentials: "include" }
         );
 
         if (res.status === 200) {
@@ -63,15 +64,15 @@ const Participants = () => {
       return null;
     };
     if (event.id !== id) {
-          fetchEvent();
+      fetchEvent();
     } else {
       setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
-    console.log(event)
-  }, [event])
+    console.log(event);
+  }, [event]);
 
   const handleParticipantTypeChange = (event: any) => {
     setParticipantType(event.target.value);
@@ -79,8 +80,6 @@ const Participants = () => {
 
   return (
     <EventContext.Provider value={{ event, setEvent }}>
-        
-        
       <div className="w-4/5 h-auto p-8">
         {loading && <Spinner loading={loading} />}
         {!loading && event && (
@@ -117,11 +116,15 @@ const Participants = () => {
               </div>
             </div>
             <FacebookShareButton
-                url="https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine"
-                hashtag="testhasthag"
-              ><FacebookIcon size={40} round={true} /></FacebookShareButton>
+              url="https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine"
+              hashtag="testhasthag"
+            >
+              <FacebookIcon size={40} round={true} />
+            </FacebookShareButton>
             <div className="bg-primary p-2 rounded w-1/6">
-              <button onClick={copyToClipboard}>Copy Event Registry link</button>
+              <button onClick={copyToClipboard}>
+                Copy Event Registry link
+              </button>
             </div>
           </div>
         )}
@@ -131,7 +134,7 @@ const Participants = () => {
         <h2>Osavõtjate lisamine</h2>
 
         <div className="w-100 flex my-3">
-        <div style={{ width: '12.5%' }}></div>
+          <div style={{ width: "12.5%" }}></div>
           <div className="w-2/4 flex">
             <div className="w-1/2 flex">
               <div className="pr-2">

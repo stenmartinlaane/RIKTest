@@ -13,7 +13,7 @@ const ParticipantRow = ({
   index: number;
 }) => {
   const router = useRouter();
-  const {event, setEvent} = useEventContext()!;
+  const { event, setEvent } = useEventContext()!;
   const handleDeleteEvent = async (e: any) => {
     e.preventDefault();
     const confirmed = window.confirm(
@@ -27,26 +27,31 @@ const ParticipantRow = ({
         `${process.env.NEXT_PUBLIC_BACKEND_SERVER}/api/v1.0/participantEvent/${participantEvent.id}`,
         {
           method: "DELETE",
-          credentials: 'include'
+          credentials: "include",
         }
-        
       );
       if (res.status === 204) {
-        setEvent(prevEvent => {
+        setEvent((prevEvent) => {
           const updatedEvent = { ...prevEvent };
-          updatedEvent.participantEvents = updatedEvent.participantEvents.filter((pe) => pe.id !== participantEvent.id);
+          updatedEvent.participantEvents =
+            updatedEvent.participantEvents.filter(
+              (pe) => pe.id !== participantEvent.id
+            );
           return updatedEvent;
         });
-        toast.success("Osavõtja eemaldatud.")
+        toast.success("Osavõtja eemaldatud.");
       } else {
-        toast.error("Tekkis viga osavõtja eemaldamisel.")
+        toast.error("Tekkis viga osavõtja eemaldamisel.");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  if (participantEvent.person !== null && participantEvent.person !== undefined) {
+  if (
+    participantEvent.person !== null &&
+    participantEvent.person !== undefined
+  ) {
     const participant = participantEvent.person;
     return (
       <div className="flex">
@@ -74,7 +79,10 @@ const ParticipantRow = ({
         </div>
       </div>
     );
-  } else if (participantEvent.firm !== null && participantEvent.firm !== undefined) {
+  } else if (
+    participantEvent.firm !== null &&
+    participantEvent.firm !== undefined
+  ) {
     const participant = participantEvent.firm;
     return (
       <div className="flex">

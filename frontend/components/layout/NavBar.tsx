@@ -28,7 +28,7 @@ export default function NavBar() {
               href="/lisa-yritus"
               className={`${
                 pathname === "/lisa-yritus" ? "bg-primary text-white" : ""
-              } px-4 h-full flex items-center hover:bg-primary hover:text-white` }
+              } px-4 h-full flex items-center hover:bg-primary hover:text-white`}
             >
               ÜRITUSE LISAMINE
             </Link>

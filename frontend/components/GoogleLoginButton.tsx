@@ -1,17 +1,17 @@
-import React from 'react'
-import { GoogleLogin } from '@react-oauth/google';
+import React from "react";
+import { GoogleLogin } from "@react-oauth/google";
 
 const GoogleLoginButton = () => {
   return (
     <GoogleLogin
-      onSuccess={credentialResponse => {
+      onSuccess={(credentialResponse) => {
         console.log(credentialResponse);
       }}
       onError={() => {
-        console.log('Login Failed');
+        console.log("Login Failed");
       }}
     />
-  )
-}
+  );
+};
 
-export default GoogleLoginButton
+export default GoogleLoginButton;
